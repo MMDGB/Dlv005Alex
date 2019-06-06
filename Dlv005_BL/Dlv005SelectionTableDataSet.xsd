@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="Dlv005SelectionTableDataSet" targetNamespace="http://tempuri.org/Dlv005SelectionTableDataSet.xsd" xmlns:mstns="http://tempuri.org/Dlv005SelectionTableDataSet.xsd" xmlns="http://tempuri.org/Dlv005SelectionTableDataSet.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="Dlv005SelectionTableDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="Dlv005SelectionTableDataSet" msprop:Generator_UserDSName="Dlv005SelectionTableDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="BD12Table" msprop:Generator_TableClassName="BD12TableDataTable" msprop:Generator_TableVarName="tableBD12Table" msprop:Generator_TablePropName="BD12Table" msprop:Generator_RowDeletingName="BD12TableRowDeleting" msprop:Generator_RowChangingName="BD12TableRowChanging" msprop:Generator_RowEvHandlerName="BD12TableRowChangeEventHandler" msprop:Generator_RowDeletedName="BD12TableRowDeleted" msprop:Generator_UserTableName="BD12Table" msprop:Generator_RowChangedName="BD12TableRowChanged" msprop:Generator_RowEvArgName="BD12TableRowChangeEvent" msprop:Generator_RowClassName="BD12TableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="BD12_BAUREIHE" msprop:Generator_ColumnVarNameInTable="columnBD12_BAUREIHE" msprop:Generator_ColumnPropNameInRow="BD12_BAUREIHE" msprop:Generator_ColumnPropNameInTable="BD12_BAUREIHEColumn" msprop:Generator_UserColumnName="BD12_BAUREIHE" type="xs:string" minOccurs="0" />
+              <xs:element name="BD12_BENENNUNG" msprop:Generator_ColumnVarNameInTable="columnBD12_BENENNUNG" msprop:Generator_ColumnPropNameInRow="BD12_BENENNUNG" msprop:Generator_ColumnPropNameInTable="BD12_BENENNUNGColumn" msprop:Generator_UserColumnName="BD12_BENENNUNG" type="xs:string" minOccurs="0" />
+              <xs:element name="BD12_PERSID_AENDERNG" msprop:Generator_ColumnVarNameInTable="columnBD12_PERSID_AENDERNG" msprop:Generator_ColumnPropNameInRow="BD12_PERSID_AENDERNG" msprop:Generator_ColumnPropNameInTable="BD12_PERSID_AENDERNGColumn" msprop:Generator_UserColumnName="BD12_PERSID_AENDERNG" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD12_PERSID_ERFASSNG" msprop:Generator_ColumnVarNameInTable="columnBD12_PERSID_ERFASSNG" msprop:Generator_ColumnPropNameInRow="BD12_PERSID_ERFASSNG" msprop:Generator_ColumnPropNameInTable="BD12_PERSID_ERFASSNGColumn" msprop:Generator_UserColumnName="BD12_PERSID_ERFASSNG" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD12_DATUM_AENDERNG" msprop:Generator_ColumnVarNameInTable="columnBD12_DATUM_AENDERNG" msprop:Generator_ColumnPropNameInRow="BD12_DATUM_AENDERNG" msprop:Generator_ColumnPropNameInTable="BD12_DATUM_AENDERNGColumn" msprop:Generator_UserColumnName="BD12_DATUM_AENDERNG" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="BD12_DATUM_ERFASSNG" msprop:Generator_ColumnVarNameInTable="columnBD12_DATUM_ERFASSNG" msprop:Generator_ColumnPropNameInRow="BD12_DATUM_ERFASSNG" msprop:Generator_ColumnPropNameInTable="BD12_DATUM_ERFASSNGColumn" msprop:Generator_UserColumnName="BD12_DATUM_ERFASSNG" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="BD09Table" msprop:Generator_TableClassName="BD09TableDataTable" msprop:Generator_TableVarName="tableBD09Table" msprop:Generator_TablePropName="BD09Table" msprop:Generator_RowDeletingName="BD09TableRowDeleting" msprop:Generator_RowChangingName="BD09TableRowChanging" msprop:Generator_RowEvHandlerName="BD09TableRowChangeEventHandler" msprop:Generator_RowDeletedName="BD09TableRowDeleted" msprop:Generator_UserTableName="BD09Table" msprop:Generator_RowChangedName="BD09TableRowChanged" msprop:Generator_RowEvArgName="BD09TableRowChangeEvent" msprop:Generator_RowClassName="BD09TableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="BD09_PERSID" msprop:Generator_ColumnVarNameInTable="columnBD09_PERSID" msprop:Generator_ColumnPropNameInRow="BD09_PERSID" msprop:Generator_ColumnPropNameInTable="BD09_PERSIDColumn" msprop:Generator_UserColumnName="BD09_PERSID" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD09_OE" msprop:Generator_ColumnVarNameInTable="columnBD09_OE" msprop:Generator_ColumnPropNameInRow="BD09_OE" msprop:Generator_ColumnPropNameInTable="BD09_OEColumn" msprop:Generator_UserColumnName="BD09_OE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD09_NAME" msprop:Generator_ColumnVarNameInTable="columnBD09_NAME" msprop:Generator_ColumnPropNameInRow="BD09_NAME" msprop:Generator_ColumnPropNameInTable="BD09_NAMEColumn" msprop:Generator_UserColumnName="BD09_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="BD09_VORNAME" msprop:Generator_ColumnVarNameInTable="columnBD09_VORNAME" msprop:Generator_ColumnPropNameInRow="BD09_VORNAME" msprop:Generator_ColumnPropNameInTable="BD09_VORNAMEColumn" msprop:Generator_UserColumnName="BD09_VORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="BD09_PERSID_AENDERNG" msprop:Generator_ColumnVarNameInTable="columnBD09_PERSID_AENDERNG" msprop:Generator_ColumnPropNameInRow="BD09_PERSID_AENDERNG" msprop:Generator_ColumnPropNameInTable="BD09_PERSID_AENDERNGColumn" msprop:Generator_UserColumnName="BD09_PERSID_AENDERNG" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD09_PERSID_ERFASSNG" msprop:Generator_ColumnVarNameInTable="columnBD09_PERSID_ERFASSNG" msprop:Generator_ColumnPropNameInRow="BD09_PERSID_ERFASSNG" msprop:Generator_ColumnPropNameInTable="BD09_PERSID_ERFASSNGColumn" msprop:Generator_UserColumnName="BD09_PERSID_ERFASSNG" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD09_DATUM_AENDERNG" msprop:Generator_ColumnVarNameInTable="columnBD09_DATUM_AENDERNG" msprop:Generator_ColumnPropNameInRow="BD09_DATUM_AENDERNG" msprop:Generator_ColumnPropNameInTable="BD09_DATUM_AENDERNGColumn" msprop:Generator_UserColumnName="BD09_DATUM_AENDERNG" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="BD09_DATUM_ERFASSNG" msprop:Generator_ColumnVarNameInTable="columnBD09_DATUM_ERFASSNG" msprop:Generator_ColumnPropNameInRow="BD09_DATUM_ERFASSNG" msprop:Generator_ColumnPropNameInTable="BD09_DATUM_ERFASSNGColumn" msprop:Generator_UserColumnName="BD09_DATUM_ERFASSNG" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="BD09_OE_KURZ_BEZ" msprop:Generator_ColumnVarNameInTable="columnBD09_OE_KURZ_BEZ" msprop:Generator_ColumnPropNameInRow="BD09_OE_KURZ_BEZ" msprop:Generator_ColumnPropNameInTable="BD09_OE_KURZ_BEZColumn" msprop:Generator_UserColumnName="BD09_OE_KURZ_BEZ" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="BD06Table" msprop:Generator_TableClassName="BD06TableDataTable" msprop:Generator_TableVarName="tableBD06Table" msprop:Generator_TablePropName="BD06Table" msprop:Generator_RowDeletingName="BD06TableRowDeleting" msprop:Generator_RowChangingName="BD06TableRowChanging" msprop:Generator_RowEvHandlerName="BD06TableRowChangeEventHandler" msprop:Generator_RowDeletedName="BD06TableRowDeleted" msprop:Generator_UserTableName="BD06Table" msprop:Generator_RowChangedName="BD06TableRowChanged" msprop:Generator_RowEvArgName="BD06TableRowChangeEvent" msprop:Generator_RowClassName="BD06TableRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="BD06_OE" msprop:Generator_ColumnVarNameInTable="columnBD06_OE" msprop:Generator_ColumnPropNameInRow="BD06_OE" msprop:Generator_ColumnPropNameInTable="BD06_OEColumn" msprop:Generator_UserColumnName="BD06_OE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD06_KURZ_BEZ" msprop:Generator_ColumnVarNameInTable="columnBD06_KURZ_BEZ" msprop:Generator_ColumnPropNameInRow="BD06_KURZ_BEZ" msprop:Generator_ColumnPropNameInTable="BD06_KURZ_BEZColumn" msprop:Generator_UserColumnName="BD06_KURZ_BEZ" type="xs:string" minOccurs="0" />
+              <xs:element name="BD06_PERSID_AENDERNG" msprop:Generator_ColumnVarNameInTable="columnBD06_PERSID_AENDERNG" msprop:Generator_ColumnPropNameInRow="BD06_PERSID_AENDERNG" msprop:Generator_ColumnPropNameInTable="BD06_PERSID_AENDERNGColumn" msprop:Generator_UserColumnName="BD06_PERSID_AENDERNG" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD06_PERSID_ERFASSNG" msprop:Generator_ColumnVarNameInTable="columnBD06_PERSID_ERFASSNG" msprop:Generator_ColumnPropNameInRow="BD06_PERSID_ERFASSNG" msprop:Generator_ColumnPropNameInTable="BD06_PERSID_ERFASSNGColumn" msprop:Generator_UserColumnName="BD06_PERSID_ERFASSNG" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BD06_DATUM_AENDERNG" msprop:Generator_ColumnVarNameInTable="columnBD06_DATUM_AENDERNG" msprop:Generator_ColumnPropNameInRow="BD06_DATUM_AENDERNG" msprop:Generator_ColumnPropNameInTable="BD06_DATUM_AENDERNGColumn" msprop:Generator_UserColumnName="BD06_DATUM_AENDERNG" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="BD06_DATUM_ERFASSNG" msprop:Generator_ColumnVarNameInTable="columnBD06_DATUM_ERFASSNG" msprop:Generator_ColumnPropNameInRow="BD06_DATUM_ERFASSNG" msprop:Generator_ColumnPropNameInTable="BD06_DATUM_ERFASSNGColumn" msprop:Generator_UserColumnName="BD06_DATUM_ERFASSNG" type="xs:dateTime" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
