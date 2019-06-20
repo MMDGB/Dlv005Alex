@@ -2634,7 +2634,7 @@ namespace Dlv005_BL {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public AllocationGridTableRow AddAllocationGridTableRow(string DL32_KONTIERUNG, decimal DL32_ANTEIL_PROZENT, decimal DL32_KOMM_ANFORDERUNG_KONTO_ID, decimal DL32_EXT_KOMM_ANFORDERUNG_ID) {
+            public AllocationGridTableRow AddAllocationGridTableRow(string DL32_KONTIERUNG, string DL32_ANTEIL_PROZENT, decimal DL32_KOMM_ANFORDERUNG_KONTO_ID, decimal DL32_EXT_KOMM_ANFORDERUNG_ID) {
                 AllocationGridTableRow rowAllocationGridTableRow = ((AllocationGridTableRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         DL32_KONTIERUNG,
@@ -2674,7 +2674,7 @@ namespace Dlv005_BL {
             private void InitClass() {
                 this.columnDL32_KONTIERUNG = new global::System.Data.DataColumn("DL32_KONTIERUNG", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDL32_KONTIERUNG);
-                this.columnDL32_ANTEIL_PROZENT = new global::System.Data.DataColumn("DL32_ANTEIL_PROZENT", typeof(decimal), null, global::System.Data.MappingType.Element);
+                this.columnDL32_ANTEIL_PROZENT = new global::System.Data.DataColumn("DL32_ANTEIL_PROZENT", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDL32_ANTEIL_PROZENT);
                 this.columnDL32_KOMM_ANFORDERUNG_KONTO_ID = new global::System.Data.DataColumn("DL32_KOMM_ANFORDERUNG_KONTO_ID", typeof(decimal), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnDL32_KOMM_ANFORDERUNG_KONTO_ID);
@@ -5452,10 +5452,10 @@ namespace Dlv005_BL {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public decimal DL32_ANTEIL_PROZENT {
+            public string DL32_ANTEIL_PROZENT {
                 get {
                     try {
-                        return ((decimal)(this[this.tableAllocationGridTable.DL32_ANTEIL_PROZENTColumn]));
+                        return ((string)(this[this.tableAllocationGridTable.DL32_ANTEIL_PROZENTColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
                         throw new global::System.Data.StrongTypingException("The value for column \'DL32_ANTEIL_PROZENT\' in table \'AllocationGridTable\' is DBNu" +

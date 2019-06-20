@@ -1,4 +1,5 @@
-﻿using Dlv005_DL;
+﻿using System;
+using Dlv005_DL;
 
 namespace Dlv005_BL
 {
@@ -8,9 +9,6 @@ namespace Dlv005_BL
     /// <seealso cref="System.Data.DataSet" />
     public partial class Dlv005DataSet
     {
-        partial class MainTableDataTable
-        {
-        }
 
         public void InitializeMainTable(Dlv005DataSet dataModel)
         {
@@ -99,6 +97,14 @@ namespace Dlv005_BL
         {
             Dlv005DataAccessComponent dataAccessComponent = new Dlv005DataAccessComponent();
             dataAccessComponent.DeleteAllocationData(deleteID);
+        }
+
+       
+
+        internal void DeleteOnlyAllocation(decimal deleteID)
+        {
+            Dlv005DataAccessComponent dataAccessComponent = new Dlv005DataAccessComponent();
+            dataAccessComponent.DeleteOnlyAllocation(deleteID);
         }
     }
 }

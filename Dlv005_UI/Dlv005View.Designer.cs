@@ -68,6 +68,7 @@
             this.FromDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.BasicDataNumberTextBox = new System.Windows.Forms.TextBox();
             this.StatusTextBox = new System.Windows.Forms.TextBox();
+            this.overviewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.TestingContentTextBox = new System.Windows.Forms.TextBox();
             this.ToLabel = new System.Windows.Forms.Label();
             this.FromLabel = new System.Windows.Forms.Label();
@@ -82,7 +83,6 @@
             this.ExitCancelButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
             this.AllocationErrorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.overviewBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.allocationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.tabControl.SuspendLayout();
             this.Overview.SuspendLayout();
@@ -93,8 +93,8 @@
             this.ProcessDatagroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.HeadDatagroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.AllocationErrorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.overviewBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AllocationErrorProvider)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.allocationBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
@@ -246,7 +246,7 @@
             this.SpecialQualificationComboBox.Location = new System.Drawing.Point(178, 97);
             this.SpecialQualificationComboBox.Name = "SpecialQualificationComboBox";
             this.SpecialQualificationComboBox.Size = new System.Drawing.Size(359, 21);
-            this.SpecialQualificationComboBox.TabIndex = 18;
+            this.SpecialQualificationComboBox.TabIndex = 22;
             // 
             // HVQualificationComboBox
             // 
@@ -254,7 +254,7 @@
             this.HVQualificationComboBox.Location = new System.Drawing.Point(178, 65);
             this.HVQualificationComboBox.Name = "HVQualificationComboBox";
             this.HVQualificationComboBox.Size = new System.Drawing.Size(359, 21);
-            this.HVQualificationComboBox.TabIndex = 17;
+            this.HVQualificationComboBox.TabIndex = 21;
             // 
             // DrivingAuthorizationComboBox
             // 
@@ -262,7 +262,7 @@
             this.DrivingAuthorizationComboBox.Location = new System.Drawing.Point(178, 36);
             this.DrivingAuthorizationComboBox.Name = "DrivingAuthorizationComboBox";
             this.DrivingAuthorizationComboBox.Size = new System.Drawing.Size(359, 21);
-            this.DrivingAuthorizationComboBox.TabIndex = 16;
+            this.DrivingAuthorizationComboBox.TabIndex = 20;
             // 
             // SpecialQualificationLabel
             // 
@@ -333,7 +333,7 @@
             this.SortTestsComboBox.Location = new System.Drawing.Point(176, 21);
             this.SortTestsComboBox.Name = "SortTestsComboBox";
             this.SortTestsComboBox.Size = new System.Drawing.Size(359, 21);
-            this.SortTestsComboBox.TabIndex = 35;
+            this.SortTestsComboBox.TabIndex = 4;
             // 
             // RoutesTypeComboBox
             // 
@@ -341,7 +341,7 @@
             this.RoutesTypeComboBox.Location = new System.Drawing.Point(176, 48);
             this.RoutesTypeComboBox.Name = "RoutesTypeComboBox";
             this.RoutesTypeComboBox.Size = new System.Drawing.Size(359, 21);
-            this.RoutesTypeComboBox.TabIndex = 34;
+            this.RoutesTypeComboBox.TabIndex = 6;
             // 
             // TestingTypeComboBox
             // 
@@ -349,14 +349,14 @@
             this.TestingTypeComboBox.Location = new System.Drawing.Point(176, 75);
             this.TestingTypeComboBox.Name = "TestingTypeComboBox";
             this.TestingTypeComboBox.Size = new System.Drawing.Size(359, 21);
-            this.TestingTypeComboBox.TabIndex = 33;
+            this.TestingTypeComboBox.TabIndex = 8;
             // 
             // SeriesButton
             // 
             this.SeriesButton.Location = new System.Drawing.Point(502, 100);
             this.SeriesButton.Name = "SeriesButton";
             this.SeriesButton.Size = new System.Drawing.Size(33, 20);
-            this.SeriesButton.TabIndex = 32;
+            this.SeriesButton.TabIndex = 10;
             this.SeriesButton.Text = ">";
             this.SeriesButton.UseVisualStyleBackColor = true;
             // 
@@ -365,14 +365,14 @@
             this.SeriesTextBox.Location = new System.Drawing.Point(176, 100);
             this.SeriesTextBox.Name = "SeriesTextBox";
             this.SeriesTextBox.Size = new System.Drawing.Size(320, 20);
-            this.SeriesTextBox.TabIndex = 31;
+            this.SeriesTextBox.TabIndex = 9;
             // 
             // EngineeringButton
             // 
             this.EngineeringButton.Location = new System.Drawing.Point(502, 343);
             this.EngineeringButton.Name = "EngineeringButton";
             this.EngineeringButton.Size = new System.Drawing.Size(33, 20);
-            this.EngineeringButton.TabIndex = 24;
+            this.EngineeringButton.TabIndex = 19;
             this.EngineeringButton.Text = ">";
             this.EngineeringButton.UseVisualStyleBackColor = true;
             // 
@@ -381,7 +381,7 @@
             this.ChiefButton.Location = new System.Drawing.Point(502, 317);
             this.ChiefButton.Name = "ChiefButton";
             this.ChiefButton.Size = new System.Drawing.Size(33, 20);
-            this.ChiefButton.TabIndex = 23;
+            this.ChiefButton.TabIndex = 17;
             this.ChiefButton.Text = ">";
             this.ChiefButton.UseVisualStyleBackColor = true;
             // 
@@ -390,7 +390,7 @@
             this.CustomerButton.Location = new System.Drawing.Point(502, 291);
             this.CustomerButton.Name = "CustomerButton";
             this.CustomerButton.Size = new System.Drawing.Size(33, 20);
-            this.CustomerButton.TabIndex = 22;
+            this.CustomerButton.TabIndex = 15;
             this.CustomerButton.Text = ">";
             this.CustomerButton.UseVisualStyleBackColor = true;
             // 
@@ -399,7 +399,7 @@
             this.CustomerOEButton.Location = new System.Drawing.Point(502, 265);
             this.CustomerOEButton.Name = "CustomerOEButton";
             this.CustomerOEButton.Size = new System.Drawing.Size(33, 20);
-            this.CustomerOEButton.TabIndex = 21;
+            this.CustomerOEButton.TabIndex = 13;
             this.CustomerOEButton.Text = ">";
             this.CustomerOEButton.UseVisualStyleBackColor = true;
             // 
@@ -408,32 +408,31 @@
             this.EngineeringASTTextBox.Location = new System.Drawing.Point(176, 343);
             this.EngineeringASTTextBox.Name = "EngineeringASTTextBox";
             this.EngineeringASTTextBox.Size = new System.Drawing.Size(320, 20);
-            this.EngineeringASTTextBox.TabIndex = 20;
+            this.EngineeringASTTextBox.TabIndex = 18;
             // 
             // ChiefTextBox
             // 
             this.ChiefTextBox.Location = new System.Drawing.Point(176, 317);
             this.ChiefTextBox.Name = "ChiefTextBox";
             this.ChiefTextBox.Size = new System.Drawing.Size(320, 20);
-            this.ChiefTextBox.TabIndex = 19;
+            this.ChiefTextBox.TabIndex = 16;
             // 
             // CustomerTextBox
             // 
             this.CustomerTextBox.Location = new System.Drawing.Point(176, 291);
             this.CustomerTextBox.Name = "CustomerTextBox";
             this.CustomerTextBox.Size = new System.Drawing.Size(320, 20);
-            this.CustomerTextBox.TabIndex = 18;
+            this.CustomerTextBox.TabIndex = 14;
             // 
             // CustomerOETextBox
             // 
             this.CustomerOETextBox.Location = new System.Drawing.Point(176, 265);
             this.CustomerOETextBox.Name = "CustomerOETextBox";
             this.CustomerOETextBox.Size = new System.Drawing.Size(320, 20);
-            this.CustomerOETextBox.TabIndex = 17;
+            this.CustomerOETextBox.TabIndex = 12;
             // 
             // dataGridView2
             // 
-            this.dataGridView2.AllowUserToAddRows = false;
             this.dataGridView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -458,7 +457,8 @@
             this.dataGridView2.Location = new System.Drawing.Point(176, 136);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.Size = new System.Drawing.Size(359, 113);
-            this.dataGridView2.TabIndex = 16;
+            this.dataGridView2.StandardTab = true;
+            this.dataGridView2.TabIndex = 11;
             // 
             // includeSundayworkCheckBox
             // 
@@ -466,7 +466,7 @@
             this.includeSundayworkCheckBox.Location = new System.Drawing.Point(683, 40);
             this.includeSundayworkCheckBox.Name = "includeSundayworkCheckBox";
             this.includeSundayworkCheckBox.Size = new System.Drawing.Size(125, 17);
-            this.includeSundayworkCheckBox.TabIndex = 11;
+            this.includeSundayworkCheckBox.TabIndex = 7;
             this.includeSundayworkCheckBox.Text = "include Sunday work";
             this.includeSundayworkCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -477,7 +477,7 @@
             this.includeSaturdayworkCheckBox.Location = new System.Drawing.Point(683, 15);
             this.includeSaturdayworkCheckBox.Name = "includeSaturdayworkCheckBox";
             this.includeSaturdayworkCheckBox.Size = new System.Drawing.Size(131, 17);
-            this.includeSaturdayworkCheckBox.TabIndex = 10;
+            this.includeSaturdayworkCheckBox.TabIndex = 5;
             this.includeSaturdayworkCheckBox.Text = "include Saturday work";
             this.includeSaturdayworkCheckBox.UseVisualStyleBackColor = true;
             // 
@@ -537,9 +537,9 @@
             this.SeriesLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.SeriesLabel.Location = new System.Drawing.Point(6, 104);
             this.SeriesLabel.Name = "SeriesLabel";
-            this.SeriesLabel.Size = new System.Drawing.Size(46, 13);
+            this.SeriesLabel.Size = new System.Drawing.Size(54, 13);
             this.SeriesLabel.TabIndex = 4;
-            this.SeriesLabel.Text = "Series:";
+            this.SeriesLabel.Text = "Serie(s):";
             // 
             // TestingTypeLabel
             // 
@@ -597,7 +597,7 @@
             this.ToDateTimePicker.Location = new System.Drawing.Point(434, 66);
             this.ToDateTimePicker.Name = "ToDateTimePicker";
             this.ToDateTimePicker.Size = new System.Drawing.Size(120, 20);
-            this.ToDateTimePicker.TabIndex = 30;
+            this.ToDateTimePicker.TabIndex = 3;
             // 
             // FromDateTimePicker
             // 
@@ -605,7 +605,7 @@
             this.FromDateTimePicker.Location = new System.Drawing.Point(262, 66);
             this.FromDateTimePicker.Name = "FromDateTimePicker";
             this.FromDateTimePicker.Size = new System.Drawing.Size(120, 20);
-            this.FromDateTimePicker.TabIndex = 29;
+            this.FromDateTimePicker.TabIndex = 2;
             // 
             // BasicDataNumberTextBox
             // 
@@ -614,7 +614,8 @@
             this.BasicDataNumberTextBox.Name = "BasicDataNumberTextBox";
             this.BasicDataNumberTextBox.ReadOnly = true;
             this.BasicDataNumberTextBox.Size = new System.Drawing.Size(52, 20);
-            this.BasicDataNumberTextBox.TabIndex = 28;
+            this.BasicDataNumberTextBox.TabIndex = 101;
+            this.BasicDataNumberTextBox.TabStop = false;
             // 
             // StatusTextBox
             // 
@@ -623,14 +624,20 @@
             this.StatusTextBox.Name = "StatusTextBox";
             this.StatusTextBox.ReadOnly = true;
             this.StatusTextBox.Size = new System.Drawing.Size(274, 20);
-            this.StatusTextBox.TabIndex = 8;
+            this.StatusTextBox.TabIndex = 100;
+            this.StatusTextBox.TabStop = false;
+            // 
+            // overviewBindingSource
+            // 
+            this.overviewBindingSource.DataMember = "MainTable";
+            this.overviewBindingSource.DataSource = typeof(Dlv005_BL.Dlv005DataSet);
             // 
             // TestingContentTextBox
             // 
             this.TestingContentTextBox.Location = new System.Drawing.Point(262, 31);
             this.TestingContentTextBox.Name = "TestingContentTextBox";
             this.TestingContentTextBox.Size = new System.Drawing.Size(317, 20);
-            this.TestingContentTextBox.TabIndex = 5;
+            this.TestingContentTextBox.TabIndex = 1;
             // 
             // ToLabel
             // 
@@ -688,7 +695,7 @@
             this.NewButton.Location = new System.Drawing.Point(12, 794);
             this.NewButton.Name = "NewButton";
             this.NewButton.Size = new System.Drawing.Size(86, 23);
-            this.NewButton.TabIndex = 1;
+            this.NewButton.TabIndex = 23;
             this.NewButton.Text = "New ";
             this.NewButton.UseVisualStyleBackColor = true;
             // 
@@ -699,7 +706,7 @@
             this.NewCopyButton.Location = new System.Drawing.Point(104, 794);
             this.NewCopyButton.Name = "NewCopyButton";
             this.NewCopyButton.Size = new System.Drawing.Size(88, 23);
-            this.NewCopyButton.TabIndex = 3;
+            this.NewCopyButton.TabIndex = 24;
             this.NewCopyButton.Text = "New + Copy";
             this.NewCopyButton.UseVisualStyleBackColor = true;
             // 
@@ -710,7 +717,7 @@
             this.DeleteButton.Location = new System.Drawing.Point(198, 794);
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(75, 23);
-            this.DeleteButton.TabIndex = 5;
+            this.DeleteButton.TabIndex = 25;
             this.DeleteButton.Text = "Delete";
             this.DeleteButton.UseVisualStyleBackColor = true;
             // 
@@ -721,7 +728,7 @@
             this.RequestButton.Location = new System.Drawing.Point(277, 794);
             this.RequestButton.Name = "RequestButton";
             this.RequestButton.Size = new System.Drawing.Size(75, 23);
-            this.RequestButton.TabIndex = 7;
+            this.RequestButton.TabIndex = 26;
             this.RequestButton.Text = "Request";
             this.RequestButton.UseVisualStyleBackColor = true;
             // 
@@ -732,7 +739,7 @@
             this.ConfirmButton.Location = new System.Drawing.Point(358, 794);
             this.ConfirmButton.Name = "ConfirmButton";
             this.ConfirmButton.Size = new System.Drawing.Size(75, 23);
-            this.ConfirmButton.TabIndex = 9;
+            this.ConfirmButton.TabIndex = 27;
             this.ConfirmButton.Text = "Confirm";
             this.ConfirmButton.UseVisualStyleBackColor = true;
             // 
@@ -743,7 +750,7 @@
             this.ExitCancelButton.Location = new System.Drawing.Point(1098, 794);
             this.ExitCancelButton.Name = "ExitCancelButton";
             this.ExitCancelButton.Size = new System.Drawing.Size(75, 23);
-            this.ExitCancelButton.TabIndex = 11;
+            this.ExitCancelButton.TabIndex = 29;
             this.ExitCancelButton.Text = "Close";
             this.ExitCancelButton.UseVisualStyleBackColor = true;
             // 
@@ -754,7 +761,7 @@
             this.SaveButton.Location = new System.Drawing.Point(1017, 794);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
-            this.SaveButton.TabIndex = 13;
+            this.SaveButton.TabIndex = 28;
             this.SaveButton.Text = "Save";
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Visible = false;
@@ -763,11 +770,6 @@
             // 
             this.AllocationErrorProvider.BlinkStyle = System.Windows.Forms.ErrorBlinkStyle.NeverBlink;
             this.AllocationErrorProvider.ContainerControl = this;
-            // 
-            // overviewBindingSource
-            // 
-            this.overviewBindingSource.DataMember = "MainTable";
-            this.overviewBindingSource.DataSource = typeof(Dlv005_BL.Dlv005DataSet);
             // 
             // allocationBindingSource
             // 
@@ -805,8 +807,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.HeadDatagroupBox.ResumeLayout(false);
             this.HeadDatagroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.AllocationErrorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.overviewBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AllocationErrorProvider)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.allocationBindingSource)).EndInit();
             this.ResumeLayout(false);
 

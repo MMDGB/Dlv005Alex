@@ -78,11 +78,6 @@ namespace Dlv005_BL
             dataRow.DL31_SAMSTAGSARBEIT = "n";
             dataRow.DL31_SONNTAGSARBEIT = "n";
             Dlv005DataSet.MainTable.Rows.Add(dataRow);
-
-            Dlv005DataSet.AllocationGridTableRow allocDataRow = Dlv005DataSet.AllocationGridTable.NewAllocationGridTableRow();
-            allocDataRow.DL32_KONTIERUNG = string.Empty;
-            allocDataRow.DL32_EXT_KOMM_ANFORDERUNG_ID = -1;
-            Dlv005DataSet.AllocationGridTable.Rows.Add(allocDataRow);
         }
 
         /// <summary>
@@ -93,7 +88,7 @@ namespace Dlv005_BL
         {
             Dlv005DataSet.MainTableRow dataCRow = Dlv005DataSet.MainTable.NewMainTableRow();
             dataCRow.DL31_KOMM_ANFORDERUNG_NR = string.Empty;
-            dataCRow.DL31_ERPROBUNGSINHALT = dataCopyRow["DL31_ERPROBUNGSINHALT"].ToString(); 
+            dataCRow.DL31_ERPROBUNGSINHALT = dataCopyRow["DL31_ERPROBUNGSINHALT"].ToString();
             dataCRow.DL37_BEZEICHNUNG = string.Empty;
             dataCRow.DL31_START_DATUM = default(DateTime);
             dataCRow.DL31_ENDE_DATUM = default(DateTime);
@@ -151,7 +146,6 @@ namespace Dlv005_BL
             DataRow lastRow = Dlv005DataSet.MainTable.Rows[Dlv005DataSet.MainTable.Rows.Count - 1];
             allocationGridInsertPosition = Convert.ToDecimal(lastRow["DL31_KOMM_ANFORDERUNG_ID"]);
 
-
             AllocationInputModel allocationInputModel = new AllocationInputModel();
 
             if (confirmIsNewCopy)
@@ -162,7 +156,7 @@ namespace Dlv005_BL
                     if (rowValue == auxID)
                     {
                         allocationInputModel.DL32_KONTIERUNG = row.IsDL32_KONTIERUNGNull() ? string.Empty : row.DL32_KONTIERUNG;
-                        allocationInputModel.DL32_ANTEIL_PROZENT = row.IsDL32_ANTEIL_PROZENTNull() ? null : row.DL32_ANTEIL_PROZENT as decimal?;
+                        allocationInputModel.DL32_ANTEIL_PROZENT = row.IsDL32_ANTEIL_PROZENTNull() ? string.Empty : row.DL32_ANTEIL_PROZENT;
                         allocationInputModel.DL32_EXT_KOMM_ANFORDERUNG_ID = allocationGridInsertPosition;
 
                         Dlv005DataSet.InsertDl32(allocationInputModel);
@@ -176,7 +170,7 @@ namespace Dlv005_BL
                 if (rowValue < 0)
                 {
                     allocationInputModel.DL32_KONTIERUNG = row.IsDL32_KONTIERUNGNull() ? string.Empty : row.DL32_KONTIERUNG;
-                    allocationInputModel.DL32_ANTEIL_PROZENT = row.IsDL32_ANTEIL_PROZENTNull() ? null : row.DL32_ANTEIL_PROZENT as decimal?;
+                    allocationInputModel.DL32_ANTEIL_PROZENT = row.IsDL32_ANTEIL_PROZENTNull() ? string.Empty : row.DL32_ANTEIL_PROZENT;
                     allocationInputModel.DL32_EXT_KOMM_ANFORDERUNG_ID = allocationGridInsertPosition;
 
                     Dlv005DataSet.InsertDl32(allocationInputModel);
@@ -223,24 +217,28 @@ namespace Dlv005_BL
 
             foreach (Dlv005DataSet.AllocationGridTableRow row in Dlv005DataSet.AllocationGridTable)
             {
-                var dl32ForeignKeyId = Convert.ToDecimal(row.DL32_EXT_KOMM_ANFORDERUNG_ID);
-                var dl32PrimaryKey = Convert.ToDecimal(row.DL32_KOMM_ANFORDERUNG_KONTO_ID);
-
-                if (dl32ForeignKeyId == dl31ForeingKeyId && dl32PrimaryKey > 0)
+                if (row.RowState != DataRowState.Deleted)
                 {
-                    allocationInputModel.DL32_KONTIERUNG = row.IsDL32_KONTIERUNGNull() ? string.Empty : row.DL32_KONTIERUNG;
-                    allocationInputModel.DL32_ANTEIL_PROZENT = row.IsDL32_ANTEIL_PROZENTNull() ? null : row.DL32_ANTEIL_PROZENT as decimal?;
-                    allocationInputModel.DL32_KOMM_ANFORDERUNG_KONTO_ID = row.IsDL32_KOMM_ANFORDERUNG_KONTO_IDNull() ? null : row.DL32_KOMM_ANFORDERUNG_KONTO_ID as decimal?;
+                    var dl32ForeignKeyId = Convert.ToDecimal(row.DL32_EXT_KOMM_ANFORDERUNG_ID);
 
-                    Dlv005DataSet.UpdateDl32(allocationInputModel);
-                }
-                else if (dl32ForeignKeyId == dl31ForeingKeyId && dl32PrimaryKey < 0)
-                {
-                    allocationInputModel.DL32_KONTIERUNG = row.IsDL32_KONTIERUNGNull() ? string.Empty : row.DL32_KONTIERUNG;
-                    allocationInputModel.DL32_ANTEIL_PROZENT = row.IsDL32_ANTEIL_PROZENTNull() ? null : row.DL32_ANTEIL_PROZENT as decimal?;
-                    allocationInputModel.DL32_EXT_KOMM_ANFORDERUNG_ID = row.IsDL32_EXT_KOMM_ANFORDERUNG_IDNull() ? null : row.DL32_EXT_KOMM_ANFORDERUNG_ID as decimal?;
+                    var dl32PrimaryKey = Convert.ToDecimal(row.DL32_KOMM_ANFORDERUNG_KONTO_ID);
 
-                    Dlv005DataSet.InsertDl32(allocationInputModel);
+                    if (dl32ForeignKeyId == dl31ForeingKeyId && dl32PrimaryKey > 0)
+                    {
+                        allocationInputModel.DL32_KONTIERUNG = row.IsDL32_KONTIERUNGNull() ? string.Empty : row.DL32_KONTIERUNG;
+                        allocationInputModel.DL32_ANTEIL_PROZENT = row.IsDL32_ANTEIL_PROZENTNull() ? string.Empty : row.DL32_ANTEIL_PROZENT;
+                        allocationInputModel.DL32_KOMM_ANFORDERUNG_KONTO_ID = row.IsDL32_KOMM_ANFORDERUNG_KONTO_IDNull() ? null : row.DL32_KOMM_ANFORDERUNG_KONTO_ID as decimal?;
+
+                        Dlv005DataSet.UpdateDl32(allocationInputModel);
+                    }
+                    else if (dl32ForeignKeyId == dl31ForeingKeyId && dl32PrimaryKey < 0)
+                    {
+                        allocationInputModel.DL32_KONTIERUNG = row.IsDL32_KONTIERUNGNull() ? string.Empty : row.DL32_KONTIERUNG;
+                        allocationInputModel.DL32_ANTEIL_PROZENT = row.IsDL32_ANTEIL_PROZENTNull() ? string.Empty : row.DL32_ANTEIL_PROZENT;
+                        allocationInputModel.DL32_EXT_KOMM_ANFORDERUNG_ID = row.IsDL32_EXT_KOMM_ANFORDERUNG_IDNull() ? null : row.DL32_EXT_KOMM_ANFORDERUNG_ID as decimal?;
+
+                        Dlv005DataSet.InsertDl32(allocationInputModel);
+                    }
                 }
             }
             confirmIsNewCopy = false;
@@ -298,6 +296,11 @@ namespace Dlv005_BL
             Dlv005DataSet.Clear();
             Dlv005DataSet.Initialize(Dlv005DataSet);
             Dlv005DataSet.AcceptChanges();
+        }
+
+        public void DeleteDataDl32OnlyAllocation(decimal deleteID)
+        {
+            Dlv005DataSet.DeleteOnlyAllocation(deleteID);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -10,20 +9,12 @@ namespace Dlv005_BL
     /// </summary>
     public partial class Dlv005Validations
     {
-        private Dictionary<string, bool> errorDictionary = new Dictionary<string, bool>();
-
-        public Dictionary<string, bool> GetDictionary()
-        {
-            return errorDictionary;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Dlv005Validations"/> class.
         /// </summary>
         /// <param name="auxDictionary">The aux dictionary.</param>
-        public Dlv005Validations(Dictionary<string, bool> auxDictionary)
+        public Dlv005Validations()
         {
-            this.errorDictionary = auxDictionary;
         }
 
         /// <summary>
@@ -32,7 +23,7 @@ namespace Dlv005_BL
         /// <param name="checkedRow">The checked row.</param>
         public void ValidateSpecialQualification(Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsSpecialQualificationValid(control.Text)) ? string.Empty : Messages.incorrectValueDropdown;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsSpecialQualificationValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueDropdown;
             errorProvider.SetError(control, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
@@ -43,35 +34,35 @@ namespace Dlv005_BL
         /// <param name="checkedRow">The checked row.</param>
         public void ValidateHVQualification(Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsHVQualificationValid(control.Text)) ? string.Empty : Messages.incorrectValueDropdown;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsHVQualificationValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueDropdown;
             errorProvider.SetError(control, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
 
         public void ValidateDrivingAuthorization(Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsDrivingAuthorizationValid(control.Text)) ? string.Empty : Messages.incorrectValueDropdown;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsDrivingAuthorizationValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueDropdown;
             errorProvider.SetError(control, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
 
         public void ValidateCustomerOE(Control button, Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsCustomerOEValid(control.Text)) ? string.Empty : Messages.incorrectValueSelectionTable;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsCustomerOEValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueSelectionTable;
             errorProvider.SetError(button, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
 
         public void ValidateSeries(Control button, Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsSeriesValid(control.Text)) ? string.Empty : Messages.incorrectValueSelectionTable;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsSeriesValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueSelectionTable;
             errorProvider.SetError(button, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
 
         public void ValidateBD09SelectionTable(Control button, Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsBD09SelectionTableValid(control.Text)) ? string.Empty : Messages.incorrectValueSelectionTable;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsBD09SelectionTableValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueSelectionTable;
             errorProvider.SetError(button, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
@@ -82,7 +73,7 @@ namespace Dlv005_BL
         /// <param name="checkedRow">The checked row.</param>
         public void ValidateRoutesType(Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsRoutesTypeValid(control.Text)) ? string.Empty : Messages.incorrectValueDropdown;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsRoutesTypeValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueDropdown;
             errorProvider.SetError(control, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
@@ -93,7 +84,7 @@ namespace Dlv005_BL
         /// <param name="checkedRow">The checked row.</param>
         public void ValidateTestingType(Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsTestingTypeValid(control.Text)) ? string.Empty : Messages.incorrectValueDropdown;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsTestingTypeValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueDropdown;
             errorProvider.SetError(control, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
@@ -102,9 +93,9 @@ namespace Dlv005_BL
         /// Validates the sort test.
         /// </summary>
         /// <param name="checkedRow">The checked row.</param>
-        public void ValidateSortTest( Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
+        public void ValidateSortTest(Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsSortTestValid(control.Text)) ? string.Empty : Messages.incorrectValueDropdown;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsSortTestValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueDropdown;
             errorProvider.SetError(control, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
@@ -113,19 +104,20 @@ namespace Dlv005_BL
         /// Validates the content of the testing.
         /// </summary>
         /// <param name="checkedRow">The checked row.</param>
-        public void ValidateTestingContent( Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
+        public void ValidateTestingContent(Control control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsTestingContentValid(control.Text)) ? string.Empty : Messages.incorrectValueDropdown;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsTestingContentValid(control.Text.ToUpper())) ? string.Empty : ErrorMessage.incorrectValueDropdown;
             errorProvider.SetError(control, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
+
         /// <summary>
         /// Validates the start date.
         /// </summary>
         /// <param name="checkedRow">The checked row.</param>
-        public void ValidateStartDate( DateTimePicker control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
+        public void ValidateStartDate(DateTimePicker control, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control.Text == string.Empty) ? Messages.emptyMandatory : (IsStartDateValid(control)) ? string.Empty : Messages.incorrectFromDate;
+            string message = (control.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsStartDateValid(control)) ? string.Empty : ErrorMessage.incorrectFromDate;
             errorProvider.SetError(control, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
@@ -136,14 +128,14 @@ namespace Dlv005_BL
         /// <param name="checkedRow">The checked row.</param>
         public void ValidateEndDate(DateTimePicker control1, DateTimePicker control2, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
         {
-            string message = (control1.Text == string.Empty) ? Messages.emptyMandatory : (IsEndDateValid(control1,control2)) ? string.Empty : Messages.incorrectFromDate;
+            string message = (control1.Text == string.Empty) ? ErrorMessage.emptyMandatory : (IsEndDateValid(control1, control2)) ? string.Empty : ErrorMessage.incorrectFromDate;
             errorProvider.SetError(control1, message);
             cancelEvent.Cancel = (message == string.Empty) ? false : true;
         }
 
         public bool IsSpecialQualificationValid(string textToValidate)
         {
-            if (textToValidate == "Offroad" || textToValidate == "Winter" || textToValidate == "Brennstoffzelle" || textToValidate == "Elektroantrieb" || textToValidate == "-")
+            if (textToValidate == "OFFROAD" || textToValidate == "WINTER" || textToValidate == "BRENNSTOFFZELLE" || textToValidate == "ELEKTROANTRIEB" || textToValidate == "-")
             {
                 return true;
             }
@@ -161,7 +153,7 @@ namespace Dlv005_BL
 
         public bool IsHVQualificationValid(string textToValidate)
         {
-            if (textToValidate == "Hochvolt 1" || textToValidate == "Hochvolt 2" || textToValidate == "Hochvolt 3")
+            if (textToValidate == "HOCHVOLT 1" || textToValidate == "HOCHVOLT 2" || textToValidate == "HOCHVOLT 3")
             {
                 return true;
             }
@@ -180,7 +172,7 @@ namespace Dlv005_BL
 
         public bool IsBD09SelectionTableValid(string textToValidate)
         {
-            if (textToValidate == "Alex,Flesher RD/BP" || textToValidate == "Teodora,Dicoiu RD/AST" || textToValidate == "Denis,Marchis ITP/DT")
+            if (textToValidate == "ALEX,FLESHER RD/BP" || textToValidate == "TEODORA,DICOIU RD/AST" || textToValidate == "DENIS,MARCHIS ITP/DT")
             {
                 return true;
             }
@@ -198,8 +190,8 @@ namespace Dlv005_BL
 
         public bool IsTestingTypeValid(string textToValidate)
         {
-            if (textToValidate == "Exam" || textToValidate == "World-DL" || textToValidate == "Full load DL" || textToValidate == "E/E" || textToValidate == "Driving assistance" || textToValidate == "Driving dynamics" ||
-               textToValidate == "Raff-DL")
+            if (textToValidate == "EXAM" || textToValidate == "WORLD-DL" || textToValidate == "FULL LOAD DL" || textToValidate == "E/E" || textToValidate == "DRIVING ASSISTANCE" || textToValidate == "DRIVING DYNAMICS" ||
+               textToValidate == "RAFF-DL")
             {
                 return true;
             }
@@ -208,7 +200,7 @@ namespace Dlv005_BL
 
         public bool IsRoutesTypeValid(string textToValidate)
         {
-            if (textToValidate == "Test area" || textToValidate == "Public road" || textToValidate == "Nürburgring" || textToValidate == "Bad road")
+            if (textToValidate == "TEST AREA" || textToValidate == "PUBLIC ROAD" || textToValidate == "NÜRBURGRING" || textToValidate == "BAD ROAD")
             {
                 return true;
             }
@@ -217,7 +209,7 @@ namespace Dlv005_BL
 
         public bool IsSortTestValid(string textToValidate)
         {
-            if (textToValidate == "Immendingen")
+            if (textToValidate == "IMMENDINGEN")
             {
                 return true;
             }
@@ -265,88 +257,70 @@ namespace Dlv005_BL
             return false;
         }
 
-     
+        private static bool SetAllocationError(DataGridView dataGridView2, ErrorProvider errorProvider, CancelEventArgs cancelEvent, string messageDisplayed)
+        {
+            cancelEvent.Cancel = true;
+            errorProvider.SetError(dataGridView2, messageDisplayed);
+            return false;
+        }
 
         /// <summary>
         /// Validates the allocation grid.
         /// </summary>
         /// <param name="dataGridView2">The data grid view2.</param>
-        public void ValidateAllocationGrid(DataGridView dataGridView2, ErrorProvider errorProvider, CancelEventArgs cancelEvent)
+        public bool ValidateAllocationGrid(DataGridView dataGridView2, ErrorProvider errorProvider, CancelEventArgs cancelEvent, string emptyMandatory, string allocationProcent, string incorrectFormat)
         {
             if (dataGridView2.Rows.Count < 1)
             {
-                string message = Messages.emptyMandatory;
-                errorProvider.SetError(dataGridView2, message);
-                cancelEvent.Cancel = false;
-
-               
+                return SetAllocationError(dataGridView2, errorProvider, cancelEvent, emptyMandatory);
             }
             else
             {
-                cancelEvent.Cancel = true;
                 decimal procent = 0;
                 for (int i = 0; i <= dataGridView2.Rows.Count - 1; i++)
                 {
-                    if (dataGridView2.Rows[i].Cells[1].Value.ToString() != string.Empty)
+                    if (dataGridView2.Rows[i].DataBoundItem != null)
                     {
-                        procent += Convert.ToDecimal(dataGridView2.Rows[i].Cells[1].Value);
-
-                        if (OnlyNumber(dataGridView2.Rows[i].Cells[1].Value.ToString()) == false)
+                        if (dataGridView2.Rows[i].Cells[1].Value.ToString() != string.Empty)
                         {
-                            string message = Messages.incorrectFormat;
-                            errorProvider.SetError(dataGridView2, message);
-                            cancelEvent.Cancel = false;
-                        }
-                        else
-                        {
-                            cancelEvent.Cancel = true;
-                        }
-
-                        if (dataGridView2.Rows[i].Cells[0].Value.ToString() == string.Empty || dataGridView2.Rows[i].Cells[1].Value == null)
-                        {
-                            string message = Messages.incorrectFormat;
-                            errorProvider.SetError(dataGridView2, message);
-                            cancelEvent.Cancel = false;
-                        }
-                        else
-                        {
-                            cancelEvent.Cancel = true;
-                        }
-                        foreach (char character in dataGridView2.Rows[i].Cells[0].Value.ToString())
-                        {
-                            if (char.IsLetter(character)==false && char.IsDigit(character)==false)
+                            if (OnlyNumber(dataGridView2.Rows[i].Cells[1].Value.ToString()) == false)
                             {
-                                string message = Messages.incorrectFormat;
-                                errorProvider.SetError(dataGridView2, message);
-                                cancelEvent.Cancel = false;
+                                return SetAllocationError(dataGridView2, errorProvider, cancelEvent, incorrectFormat);
                             }
-                            else if (char.IsLetter(character) == true && char.IsDigit(character) == true)
+                            procent += Convert.ToDecimal(dataGridView2.Rows[i].Cells[1].Value);
+                            if (dataGridView2.Rows[i].Cells[0].Value.ToString() == string.Empty)
                             {
-                                cancelEvent.Cancel = true;
+                                return SetAllocationError(dataGridView2, errorProvider, cancelEvent, emptyMandatory);
+                            }
+                            foreach (char character in dataGridView2.Rows[i].Cells[0].Value.ToString())
+                            {
+                                if (char.IsLetter(character) == false && char.IsDigit(character) == false)
+                                {
+                                    return SetAllocationError(dataGridView2, errorProvider, cancelEvent, incorrectFormat);
+                                }
+                            }
+                            if (Convert.ToDecimal(dataGridView2.Rows[i].Cells[1].Value) > 100)
+                            {
+                                return SetAllocationError(dataGridView2, errorProvider, cancelEvent, allocationProcent);
+                            }
+                            if (Convert.ToDecimal(dataGridView2.Rows[i].Cells[1].Value) < 0)
+                            {
+                                return SetAllocationError(dataGridView2, errorProvider, cancelEvent, incorrectFormat);
                             }
                         }
-                        if (((Convert.ToDecimal(dataGridView2.Rows[i].Cells[1].Value) > 100 || Convert.ToDecimal(dataGridView2.Rows[i].Cells[1].Value) < 0)))
-                        {
-                            string message = Messages.incorrectFormat;
-                            errorProvider.SetError(dataGridView2, message);
-                            cancelEvent.Cancel = false;
-                        }
                         else
                         {
-                            cancelEvent.Cancel = true;
+                            return SetAllocationError(dataGridView2, errorProvider, cancelEvent, emptyMandatory);
                         }
                     }
                 }
                 if (procent != 100)
                 {
-                    string message = Messages.allocationProcent;
-                    errorProvider.SetError(dataGridView2, message);
-                    cancelEvent.Cancel = false;
+                    return SetAllocationError(dataGridView2, errorProvider, cancelEvent, allocationProcent);
                 }
-                else
-                {
-                    cancelEvent.Cancel = true;
-                }
+                cancelEvent.Cancel = false;
+                errorProvider.SetError(dataGridView2, null);
+                return true;
             }
         }
 

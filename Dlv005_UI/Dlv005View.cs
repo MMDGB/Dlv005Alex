@@ -24,18 +24,13 @@ namespace Dlv005_UI
         public bool isNew = false;
         public bool isNewCopy = false;
         private Dlv005BusinessOperations businessOperations;
-        private Dlv005Validations businessValidations;
+        private Dlv005Validations businessValidations = new Dlv005Validations();
         private List<KeyValuePair<decimal, string>> keyValuePairs;
         public DataRow newcopyrow;
         private int requestContor;
         private string testingNumber;
         private string auxStatusCheck;
         private int auxAllocRowMaxContor = 1;
-        private int comboboxBool1;
-        private int comboboxBool2;
-        private int comboboxBool3;
-        private int comboboxBool4;
-        private int comboboxBool5;
         private bool gridHasRows;
         private bool isInEditMode = false;
         private int mousePositionX;
@@ -44,7 +39,20 @@ namespace Dlv005_UI
         private int numberOfCommisionsDisplayOnOverview;
         private int mousePositionY;
         private bool firstCommision;
-        private Dictionary<string, bool> errorsDictionary = new Dictionary<string, bool>();
+        private bool isFirstLoadRoutesType = true;
+        private bool isFirstLoadTestingType = true;
+        private bool isFirstLoadSortTests = true;
+        private bool isFirstLoadSpecialQualification = true;
+        private bool isFirstLoadHVQualification = true;
+        private bool isFirstLoadDrivingAuthorization = true;
+        private bool isFirstLoadSeriesText = true;
+        private bool isFirstLoadCustomerOE = true;
+        private bool isFirstLoadCustomer = true;
+        private bool isFirstLoadChief = true;
+        private bool isFirstLoadEngineeringAST = true;
+        private List<decimal> allocationDeletedRows = new List<decimal>();
+        private bool isRequeestedInBasicData;
+        private bool isConfirmedInBasicData;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Dlv005View"/> class.
@@ -123,8 +131,54 @@ namespace Dlv005_UI
             dataGridView2.MouseClick += DataGridView2_MouseClick;
             FromDateTimePicker.ValueChanged += FromDateTimePicker_ValueChanged;
             ToDateTimePicker.ValueChanged += ToDateTimePicker_ValueChanged;
+            SeriesTextBox.TextChanged += SeriesTextBox_TextChanged;
+            CustomerOETextBox.TextChanged += CustomerOETextBox_TextChanged;
+            CustomerTextBox.TextChanged += CustomerTextBox_TextChanged;
+            ChiefTextBox.TextChanged += ChiefTextBox_TextChanged;
+            EngineeringASTTextBox.TextChanged += EngineeringASTTextBox_TextChanged;
+            dataGridView2.UserDeletingRow += DataGridView2_UserDeletingRow;
+            dataGridView2.UserAddedRow += DataGridView2_UserAddedRow;
         }
 
+        /// <summary>
+        /// Prepare a new row for allocation.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGridView2_UserAddedRow(object sender, DataGridViewRowEventArgs e)
+        {
+            allocationBindingSource.EndEdit();
+            if (isNew || isNewCopy)
+            {
+                businessOperations.CreateNewAllocationRowIfNeededForNew();
+            }
+            else
+            {
+                businessOperations.CreateNewAllocationRowIfNeededDForUpdate(((DataRowView)overviewBindingSource.Current).Row as Dlv005DataSet.MainTableRow);
+            }
+            dataGridView2.AllowUserToAddRows = false;
+            dataGridView2.Rows[0].Selected = true;
+            dataGridView2.CurrentCell = dataGridView2.Rows[dataGridView2.Rows.Count - 1].Cells[0];
+            businessOperations.Dlv005DataSet.AllocationGridTable.Rows[businessOperations.Dlv005DataSet.AllocationGridTable.Rows.Count - 2].Delete();
+        }
+
+        /// <summary>
+        ///Delete an existing empty row from allocation.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DataGridView2_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            EnableEditMode(true);
+            decimal deletedRowId = Convert.ToDecimal(e.Row.Cells[2].Value);
+            allocationDeletedRows.Add(deletedRowId);
+        }
+
+        /// <summary>
+        ///Set "To" the datetime picker empty for new and newcopy opperations.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ToDateTimePicker_ValueChanged(object sender, EventArgs e)
         {
             SetEmptyToDateTimePicker("dd/MM/yyyy");
@@ -139,6 +193,11 @@ namespace Dlv005_UI
             }
         }
 
+        /// <summary>
+        ///Set "From" the datetime picker empty for new and newcopy opperations.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FromDateTimePicker_ValueChanged(object sender, EventArgs e)
         {
             SetEmptyFromDateTimePicker("dd/MM/yyyy");
@@ -154,7 +213,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Create a context menui for allocation.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -174,7 +233,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Copy the cell value from allocation.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -196,7 +255,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Copy the selected row from allocation.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -235,7 +294,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Send commision to basic data tab.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -245,12 +304,19 @@ namespace Dlv005_UI
             {
                 return;
             }
-            dataGridView1.Rows[dataGridView1.HitTest(e.X, e.Y).RowIndex].Selected = true;
+            if (dataGridView1.HitTest(e.X, e.Y).RowIndex >= 0)
+            {
+                dataGridView1.Rows[dataGridView1.HitTest(e.X, e.Y).RowIndex].Selected = true;
+            }
+            else
+            {
+                return;
+            }
             tabControl.SelectedTab = BasicData;
         }
 
         /// <summary>
-        ///
+        ///Create a context menui for overview.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -270,7 +336,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Copy the selected row from overview.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -291,7 +357,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Copy the cell value from overview.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -313,13 +379,12 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Enable EditMode if allocation is moddified.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            ExitCancelButton.Text = "Cancel";
             if (isNew == false && tabControl.SelectedTab == BasicData)
             {
                 EnableEditMode(true);
@@ -333,18 +398,22 @@ namespace Dlv005_UI
         /// <param name="e">The <see cref="KeyEventArgs"/> instance containing the event data.</param>
         private void DataGridView2_KeyDown(object sender, KeyEventArgs e)
         {
-            foreach (DataGridViewRow row in dataGridView2.Rows)
+            if (isInEditMode && dataGridView2.AllowUserToAddRows==false)
             {
-                if (row.Cells[0].Value.ToString() == string.Empty || row.Cells[1].Value.ToString() == string.Empty)
+                foreach (DataGridViewRow row in dataGridView2.Rows)
                 {
-                    auxAllocRowMaxContor = 0;
-                    break;
-                }
-                else
-                {
-                    auxAllocRowMaxContor = 1;
+                    if (row.Cells[0].Value.ToString() == string.Empty || row.Cells[1].Value.ToString() == string.Empty)
+                    {
+                        auxAllocRowMaxContor = 0;
+                        break;
+                    }
+                    else
+                    {
+                        auxAllocRowMaxContor = 1;
+                    }
                 }
             }
+           
             if (e.KeyData == Keys.Down && auxAllocRowMaxContor == 1)
             {
                 if (isNew || isNewCopy)
@@ -360,6 +429,7 @@ namespace Dlv005_UI
             {
                 return;
             }
+           
         }
 
         /// <summary>
@@ -411,107 +481,122 @@ namespace Dlv005_UI
 
             if (position >= 0)
             {
-                CheckForStatusChange();
-                Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
-
-                if (isNew)
+                if (isRequeestedInBasicData)
                 {
-                    allocationBindingSource.Filter = String.Format(("DL32_EXT_KOMM_ANFORDERUNG_ID= {0}"), -1);
+                    var row = businessOperations.Dlv005DataSet.MainTable.Where(r => r.DL31_KOMM_ANFORDERUNG_NR == testingNumber).First();
+                    DisplayRowInBasicData(row);
                 }
                 else
                 {
-                    allocationBindingSource.Filter = string.Concat(String.Format("DL32_EXT_KOMM_ANFORDERUNG_ID= {0}",
-                        Convert.ToInt16(row.DL31_KOMM_ANFORDERUNG_ID)), " OR ", String.Format("DL32_EXT_KOMM_ANFORDERUNG_ID= {0}", -1));
+                    DisplayRowInBasicData(GetTheCorrectActiveRow() as Dlv005DataSet.MainTableRow);
                 }
+            }
+        }
 
-                if (isNew == false && (row.DL31_SAMSTAGSARBEIT).ToString() == "j")
-                {
-                    includeSaturdayworkCheckBox.Checked = true;
-                    row.AcceptChanges();
-                }
-                else
-                {
-                    includeSaturdayworkCheckBox.Checked = false;
-                    row.AcceptChanges();
-                }
-                if (isNew == false && (row.DL31_SONNTAGSARBEIT).ToString() == "j")
-                {
-                    includeSundayworkCheckBox.Checked = true;
-                    row.AcceptChanges();
-                }
-                else
-                {
-                    includeSundayworkCheckBox.Checked = false;
-                    row.AcceptChanges();
-                }
-                if (row.RowState != DataRowState.Added)
-                {
-                    SortTestsComboBox.Text = businessOperations.Dlv005DataSet.DL38Table.
-                        Where(r => r.DL38_KOMM_ERPROBUNGSORT_ID == row.DL31_KOMM_ERPROBUNGSORT_ID).
-                        Select(r => r.DL38_BEZEICHNUNG).ToArray()[0];
+        /// <summary>
+        /// Display correct data from selected row in basic data tab.
+        /// </summary>
+        /// <param name="row"></param>
+        private void DisplayRowInBasicData(Dlv005DataSet.MainTableRow row)
+        {
+            CheckForStatusChange();
+            if (isNew)
+            {
+                allocationBindingSource.Filter = string.Format("DL32_EXT_KOMM_ANFORDERUNG_ID= {0}", -1);
+            }
+            else
+            {
+                allocationBindingSource.Filter = string.Concat(String.Format("DL32_EXT_KOMM_ANFORDERUNG_ID= {0}",
+                    Convert.ToInt16(row.DL31_KOMM_ANFORDERUNG_ID)), " OR ", String.Format("DL32_EXT_KOMM_ANFORDERUNG_ID= {0}", -1));
+            }
 
-                    RoutesTypeComboBox.Text = businessOperations.Dlv005DataSet.DL39Table.
-                        Where(r => r.DL39_KOMM_STRECKENART_ID == row.DL31_KOMM_STRECKENART_ID).
-                        Select(r => r.DL39_BEZEICHNUNG).ToArray()[0];
+            if (isNew == false && (row.DL31_SAMSTAGSARBEIT).ToString() == "j")
+            {
+                includeSaturdayworkCheckBox.Checked = true;
+                row.AcceptChanges();
+            }
+            else
+            {
+                includeSaturdayworkCheckBox.Checked = false;
+                row.AcceptChanges();
+            }
+            if (isNew == false && (row.DL31_SONNTAGSARBEIT).ToString() == "j")
+            {
+                includeSundayworkCheckBox.Checked = true;
+                row.AcceptChanges();
+            }
+            else
+            {
+                includeSundayworkCheckBox.Checked = false;
+                row.AcceptChanges();
+            }
+            if (row.RowState != DataRowState.Added)
+            {
+                SortTestsComboBox.Text = businessOperations.Dlv005DataSet.DL38Table.
+                    Where(r => r.DL38_KOMM_ERPROBUNGSORT_ID == row.DL31_KOMM_ERPROBUNGSORT_ID).
+                    Select(r => r.DL38_BEZEICHNUNG).ToArray()[0];
 
-                    TestingTypeComboBox.Text = businessOperations.Dlv005DataSet.DL40Table.
-                        Where(r => r.DL40_KOMM_ERPROBUNGSART_ID == row.DL31_KOMM_ERPROBUNGSART_ID).
-                        Select(r => r.DL40_BEZEICHNUNG).ToArray()[0];
+                RoutesTypeComboBox.Text = businessOperations.Dlv005DataSet.DL39Table.
+                    Where(r => r.DL39_KOMM_STRECKENART_ID == row.DL31_KOMM_STRECKENART_ID).
+                    Select(r => r.DL39_BEZEICHNUNG).ToArray()[0];
 
-                    DrivingAuthorizationComboBox.Text = businessOperations.Dlv005DataSet.SD111Table.
-                        Where(r => r.SD111_QUALIFIKATIONEN_ID == row.DL31_FAHRBERECHTIGUNG_ID).
-                        Select(r => r.SD111_WERT).ToArray()[0];
+                TestingTypeComboBox.Text = businessOperations.Dlv005DataSet.DL40Table.
+                    Where(r => r.DL40_KOMM_ERPROBUNGSART_ID == row.DL31_KOMM_ERPROBUNGSART_ID).
+                    Select(r => r.DL40_BEZEICHNUNG).ToArray()[0];
 
-                    HVQualificationComboBox.Text = businessOperations.Dlv005DataSet.SD111Table.
-                        Where(r => r.SD111_QUALIFIKATIONEN_ID == row.DL31_HV_QUALIFIKATION_ID).
-                        Select(r => r.SD111_WERT).ToArray()[0];
+                DrivingAuthorizationComboBox.Text = businessOperations.Dlv005DataSet.SD111Table.
+                    Where(r => r.SD111_QUALIFIKATIONEN_ID == row.DL31_FAHRBERECHTIGUNG_ID).
+                    Select(r => r.SD111_WERT).ToArray()[0];
 
-                    SpecialQualificationComboBox.Text = businessOperations.Dlv005DataSet.SD111Table.
-                        Where(r => r.SD111_QUALIFIKATIONEN_ID == row.DL31_SONDERQUALIFIKATION_ID).
-                        Select(r => r.SD111_WERT).ToArray()[0];
+                HVQualificationComboBox.Text = businessOperations.Dlv005DataSet.SD111Table.
+                    Where(r => r.SD111_QUALIFIKATIONEN_ID == row.DL31_HV_QUALIFIKATION_ID).
+                    Select(r => r.SD111_WERT).ToArray()[0];
 
-                    CustomerOETextBox.Text = businessOperations.Dlv005DataSet.BD06Table.
-                       Where(r => r.BD06_OE == row.DL31_AUFTRAGGEBER_OE).
-                       Select(r => r.BD06_KURZ_BEZ).ToArray()[0];
+                SpecialQualificationComboBox.Text = businessOperations.Dlv005DataSet.SD111Table.
+                    Where(r => r.SD111_QUALIFIKATIONEN_ID == row.DL31_SONDERQUALIFIKATION_ID).
+                    Select(r => r.SD111_WERT).ToArray()[0];
 
-                    CustomerTextBox.Text = businessOperations.Dlv005DataSet.BD09Table.
-                        Where(r => r.BD09_PERSID == row.DL31_AUFTRAGGEBER_PERSID).
-                        Select(r => (r.BD09_NAME + "," + r.BD09_VORNAME + " " + r.BD09_OE_KURZ_BEZ)).ToArray()[0];
+                CustomerOETextBox.Text = businessOperations.Dlv005DataSet.BD06Table.
+                   Where(r => r.BD06_OE == row.DL31_AUFTRAGGEBER_OE).
+                   Select(r => r.BD06_KURZ_BEZ).ToArray()[0];
 
-                    ChiefTextBox.Text = businessOperations.Dlv005DataSet.BD09Table.
-                        Where(r => r.BD09_PERSID == row.DL31_FAHRTENLEITER_PERSID).
-                        Select(r => (r.BD09_NAME + "," + r.BD09_VORNAME + " " + r.BD09_OE_KURZ_BEZ)).ToArray()[0];
+                CustomerTextBox.Text = businessOperations.Dlv005DataSet.BD09Table.
+                    Where(r => r.BD09_PERSID == row.DL31_AUFTRAGGEBER_PERSID).
+                    Select(r => (r.BD09_NAME + "," + r.BD09_VORNAME + " " + r.BD09_OE_KURZ_BEZ)).ToArray()[0];
 
-                    EngineeringASTTextBox.Text = businessOperations.Dlv005DataSet.BD09Table.
-                        Where(r => r.BD09_PERSID == row.DL31_ENGINEERING_AST_PERSID).
-                        Select(r => (r.BD09_NAME + "," + r.BD09_VORNAME + " " + r.BD09_OE_KURZ_BEZ)).ToArray()[0];
+                ChiefTextBox.Text = businessOperations.Dlv005DataSet.BD09Table.
+                    Where(r => r.BD09_PERSID == row.DL31_FAHRTENLEITER_PERSID).
+                    Select(r => (r.BD09_NAME + "," + r.BD09_VORNAME + " " + r.BD09_OE_KURZ_BEZ)).ToArray()[0];
 
-                    SeriesTextBox.Text = businessOperations.Dlv005DataSet.MainTable.
-                        Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
-                        Select(r => r.DL31_BAUREIHEN).ToArray()[0];
+                EngineeringASTTextBox.Text = businessOperations.Dlv005DataSet.BD09Table.
+                    Where(r => r.BD09_PERSID == row.DL31_ENGINEERING_AST_PERSID).
+                    Select(r => (r.BD09_NAME + "," + r.BD09_VORNAME + " " + r.BD09_OE_KURZ_BEZ)).ToArray()[0];
 
-                    StatusTextBox.Text = businessOperations.Dlv005DataSet.MainTable.
-                         Where(r => r.DL31_KOMM__STATUS_ID == row.DL31_KOMM__STATUS_ID).
-                         Select(r => r.DL37_BEZEICHNUNG).ToArray()[0];
+                SeriesTextBox.Text = businessOperations.Dlv005DataSet.MainTable.
+                    Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
+                    Select(r => r.DL31_BAUREIHEN).ToArray()[0];
 
-                    BasicDataNumberTextBox.Text = businessOperations.Dlv005DataSet.MainTable.
-                         Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
-                         Select(r => r.DL31_KOMM_ANFORDERUNG_NR).ToArray()[0];
+                StatusTextBox.Text = businessOperations.Dlv005DataSet.MainTable.
+                     Where(r => r.DL31_KOMM__STATUS_ID == row.DL31_KOMM__STATUS_ID).
+                     Select(r => r.DL37_BEZEICHNUNG).ToArray()[0];
 
-                    TestingContentTextBox.Text = businessOperations.Dlv005DataSet.MainTable.
-                         Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
-                         Select(r => r.DL31_ERPROBUNGSINHALT).ToArray()[0];
+                BasicDataNumberTextBox.Text = businessOperations.Dlv005DataSet.MainTable.
+                     Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
+                     Select(r => r.DL31_KOMM_ANFORDERUNG_NR).ToArray()[0];
 
-                    FromDateTimePicker.Text = (businessOperations.Dlv005DataSet.MainTable.
-                         Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
-                         Select(r => r.DL31_START_DATUM).ToArray()[0]).ToString();
+                TestingContentTextBox.Text = businessOperations.Dlv005DataSet.MainTable.
+                     Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
+                     Select(r => r.DL31_ERPROBUNGSINHALT).ToArray()[0];
 
-                    ToDateTimePicker.Text = (businessOperations.Dlv005DataSet.MainTable.
-                        Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
-                         Select(r => r.DL31_ENDE_DATUM).ToArray()[0]).ToString();
+                FromDateTimePicker.Text = (businessOperations.Dlv005DataSet.MainTable.
+                     Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
+                     Select(r => r.DL31_START_DATUM).ToArray()[0]).ToString();
 
-                    row.AcceptChanges();
-                }
+                ToDateTimePicker.Text = (businessOperations.Dlv005DataSet.MainTable.
+                    Where(r => r.DL31_KOMM_ANFORDERUNG_ID == row.DL31_KOMM_ANFORDERUNG_ID).
+                     Select(r => r.DL31_ENDE_DATUM).ToArray()[0]).ToString();
+
+                row.AcceptChanges();
             }
         }
 
@@ -531,8 +616,14 @@ namespace Dlv005_UI
                 tabControl.SelectedTab = BasicData;
                 return;
             }
-
             ResetDataWhenCancelOrEnterBasicData();
+            if (isNew || isNewCopy)
+            {
+                foreach (Control c in BasicData.Controls)
+                {
+                    c.Enabled = true;
+                }
+            }
         }
 
         /// <summary>
@@ -558,6 +649,11 @@ namespace Dlv005_UI
             {
                 overviewBindingSource.Filter = null;
             }
+            if (overviewBindingSource.Position >= 0)
+            {
+                dataGridView1.Rows[0].Selected = true;
+                dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[1];
+            }
             numberOfCommisionsDisplayOnOverview = dataGridView1.RowCount;
             OverviewNumbetTextBox.Text = numberOfCommisionsDisplayOnOverview.ToString();
             DisableButtonsWhenNoComissions();
@@ -565,7 +661,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Disable unnecesary buttons if there is no commiosion displayed.
         /// </summary>
         public void DisableButtonsWhenNoComissions()
         {
@@ -607,6 +703,11 @@ namespace Dlv005_UI
             else
             {
                 overviewBindingSource.Filter = null;
+            }
+            if (overviewBindingSource.Position >= 0)
+            {
+                dataGridView1.Rows[0].Selected = true;
+                dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[1];
             }
             numberOfCommisionsDisplayOnOverview = dataGridView1.RowCount;
             OverviewNumbetTextBox.Text = numberOfCommisionsDisplayOnOverview.ToString();
@@ -652,13 +753,24 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Check the commision status and enable/disable needed buttons.
         /// </summary>
         private void CheckForStatusChange()
         {
             if (overviewBindingSource.Position >= 0)
             {
-                SelectCorrectRowForStatusCheck(DuplicateSelectedRow());
+                if (isRequeestedInBasicData)
+                {
+                    auxStatusCheck = "Requested";
+                }
+                if (isConfirmedInBasicData)
+                {
+                    auxStatusCheck = "Confirmed";
+                }
+                if (!isRequeestedInBasicData && !isConfirmedInBasicData)
+                {
+                    SelectCorrectRowForStatusCheck(DuplicateSelectedRow());
+                }
 
                 if (auxStatusCheck == "Confirmed" && tabControl.SelectedTab == BasicData)
                 {
@@ -714,7 +826,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Set value for checkbok.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -736,7 +848,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Set value for checkbok.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -764,14 +876,12 @@ namespace Dlv005_UI
         /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
         public void DeleteButton_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Should the external picking really be deleted? ", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(ErrorMessage.makeSureWannaDelete, "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
                 var deleteID = row.DL31_KOMM_ANFORDERUNG_ID;
                 businessOperations.DeleteDataDl32(deleteID);
                 businessOperations.DeleteData(deleteID);
-                numberOfCommisionsDisplayOnOverview = dataGridView1.RowCount;
-                OverviewNumbetTextBox.Text = numberOfCommisionsDisplayOnOverview.ToString();
                 CheckForExistingRows();
                 if (tabControl.SelectedTab == BasicData)
                 {
@@ -783,6 +893,8 @@ namespace Dlv005_UI
                     businessOperations.ReloadAllocation();
                     businessOperations.Reload();
                 }
+                numberOfCommisionsDisplayOnOverview = dataGridView1.RowCount;
+                OverviewNumbetTextBox.Text = numberOfCommisionsDisplayOnOverview.ToString();
                 DisableButtonsWhenNoComissions();
             }
         }
@@ -815,6 +927,170 @@ namespace Dlv005_UI
             ConfirmButton.Visible = true;
             ExitCancelButton.Text = "Close";
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SeriesTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = SeriesTextBox.Text;
+            if (textToCheck == string.Empty && !isFirstLoadSeriesText)
+            {
+                EnableEditMode(true);
+            }
+            row.DL31_BAUREIHEN = textToCheck;
+            if (!isFirstLoadSeriesText)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadSeriesText = false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CustomerOETextBox_TextChanged(object sender, EventArgs e)
+        {
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = CustomerOETextBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadCustomerOE)
+            {
+                EnableEditMode(true);
+            }
+            switch (textToCheck)
+            {
+                case "RD/AST":
+                    row.DL31_AUFTRAGGEBER_OE = 1;
+                    break;
+
+                case "RD/BP":
+                    row.DL31_AUFTRAGGEBER_OE = 2;
+                    break;
+
+                case "ITP/DT":
+                    row.DL31_AUFTRAGGEBER_OE = 3;
+                    break;
+
+                default:
+                    break;
+            }
+            if (!isFirstLoadCustomerOE)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadCustomerOE = false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CustomerTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = CustomerTextBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadCustomer)
+            {
+                EnableEditMode(true);
+            }
+            switch (textToCheck)
+            {
+                case "TEODORA,DICOIU RD/AST":
+                    row.DL31_AUFTRAGGEBER_PERSID = 2;
+                    break;
+
+                case "DENIS,MARCHIS ITP/DT":
+                    row.DL31_AUFTRAGGEBER_PERSID = 1;
+                    break;
+
+                case "ALEX,FLESHER RD/BP":
+                    row.DL31_AUFTRAGGEBER_PERSID = 3;
+                    break;
+
+                default:
+                    break;
+            }
+            if (!isFirstLoadCustomer)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadCustomer = false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChiefTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = ChiefTextBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadCustomer)
+            {
+                EnableEditMode(true);
+            }
+            switch (textToCheck)
+            {
+                case "TEODORA,DICOIU RD/AST":
+                    row.DL31_FAHRTENLEITER_PERSID = 2;
+                    break;
+
+                case "DENIS,MARCHIS ITP/DT":
+                    row.DL31_FAHRTENLEITER_PERSID = 1;
+                    break;
+
+                case "ALEX,FLESHER RD/BP":
+                    row.DL31_FAHRTENLEITER_PERSID = 3;
+                    break;
+
+                default:
+                    break;
+            }
+            if (!isFirstLoadChief)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadChief = false;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EngineeringASTTextBox_TextChanged(object sender, EventArgs e)
+        {
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = EngineeringASTTextBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadEngineeringAST)
+            {
+                EnableEditMode(true);
+            }
+            switch (textToCheck)
+            {
+                case "TEODORA,DICOIU RD/AST":
+                    row.DL31_ENGINEERING_AST_PERSID = 2;
+                    break;
+
+                case "DENIS,MARCHIS ITP/DT":
+                    row.DL31_ENGINEERING_AST_PERSID = 1;
+                    break;
+
+                case "ALEX,FLESHER RD/BP":
+                    row.DL31_ENGINEERING_AST_PERSID = 3;
+                    break;
+
+                default:
+                    break;
+            }
+            if (!isFirstLoadEngineeringAST)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadEngineeringAST = false;
+        }
 
         #region ComboBox TextChange Events
 
@@ -825,83 +1101,50 @@ namespace Dlv005_UI
         /// <param name="e"></param>
         private void TestingTypeComboBox_TextChanged(object sender, EventArgs e)
         {
-            //if (((ComboBox)sender).SelectedItem == null && overviewBindingSource.Position >= 0)
-            //{
-            //    return;
-            //}
-            //if (overviewBindingSource.Position >= 0 && ((ComboBox)sender).SelectedItem != null)
-            //{
-            //    Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = TestingTypeComboBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadTestingType)
+            {
+                EnableEditMode(true);
+            }
+            switch (textToCheck)
+            {
+                case "EXAM":
+                    row.DL31_KOMM_ERPROBUNGSART_ID = 1;
+                    break;
 
-            //    string auxStringToGetTheValue = (((ComboBox)sender).SelectedValue).ToString();
-            //    if (comboboxBool == 0)
-            //    {
-            //        if (auxStringToGetTheValue[2] == Convert.ToChar(","))
-            //        {
-            //            row.DL31_KOMM_ERPROBUNGSART_ID = Convert.ToDecimal(auxStringToGetTheValue.Substring(1, 1));
-            //        }
-            //        else
-            //        {
-            //            row.DL31_KOMM_ERPROBUNGSART_ID = Convert.ToDecimal(auxStringToGetTheValue.Substring(1, 2));
-            //        }
-            //    }
-            //    else
-            //    {
-            //        row.DL31_KOMM_ERPROBUNGSART_ID = Convert.ToDecimal(auxStringToGetTheValue);
-            //    }
+                case "WORLD-DL":
+                    row.DL31_KOMM_ERPROBUNGSART_ID = 2;
+                    break;
 
-            //}
-            Dlv005DataSet.MainTableRow rows = DuplicateSelectedRow();
-            string textToCheck = TestingTypeComboBox.Text;
-            if (TestingTypeComboBox.Text == string.Empty)
-            {
-                return;
-            }
-            else if (textToCheck == "Exam")
-            {
-                rows.DL31_KOMM_ERPROBUNGSART_ID = 1;
-            }
-            else if (textToCheck == "World-DL")
-            {
-                rows.DL31_KOMM_ERPROBUNGSART_ID = 2;
-            }
-            else if (textToCheck == "Full load DL")
-            {
-                rows.DL31_KOMM_ERPROBUNGSART_ID = 3;
-            }
-            else if (textToCheck == "E/E")
-            {
-                rows.DL31_KOMM_ERPROBUNGSART_ID = 4;
-            }
-            else if (textToCheck == "Driving assistance")
-            {
-                rows.DL31_KOMM_ERPROBUNGSART_ID = 5;
-            }
-            else if (textToCheck == "Driving dynamics")
-            {
-                rows.DL31_KOMM_ERPROBUNGSART_ID = 6;
-            }
-            else if (textToCheck == "Raff-DL")
-            {
-                rows.DL31_KOMM_ERPROBUNGSART_ID = 7;
-            }
-            else
-                return;
+                case "FULL LOAD DL":
+                    row.DL31_KOMM_ERPROBUNGSART_ID = 3;
+                    break;
 
-            //Dlv005DataSet.MainTableRow rows = DuplicateSelectedRow();
+                case "E/E":
+                    row.DL31_KOMM_ERPROBUNGSART_ID = 4;
+                    break;
 
-            //if (rows != null && rows.DL31_KOMM_ERPROBUNGSART_ID < 0)
-            //{
-            //    string textToCheck = TestingTypeComboBox.Text;
+                case "DRIVING ASSISTANCE":
+                    row.DL31_KOMM_ERPROBUNGSART_ID = 5;
+                    break;
 
-            //    if (textToCheck == "Exam")//|| textToCheck == "World-DL" || textToCheck == "Full load DL" || textToCheck == "E/E" || textToCheck == "Driving assistance" || textToCheck == "Driving dynamics" ||
-            //                              //textToCheck == "Raff-DL" || textToCheck == "Flight" || textToCheck == "Hired car" || textToCheck == "Car" || textToCheck == "Test vehicle")
-            //    {
-            //        rows.DL31_KOMM_ERPROBUNGSART_ID = 1;
-            //    }
+                case "DRIVING DYNAMICS":
+                    row.DL31_KOMM_ERPROBUNGSART_ID = 6;
+                    break;
 
-            //}
-            //comboboxBool = 2;
+                case "RAFF-DL":
+                    row.DL31_KOMM_ERPROBUNGSART_ID = 7;
+                    break;
+
+                default:
+                    break;
+            }
+            if (!isFirstLoadTestingType)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadRoutesType = false;
         }
 
         /// <summary>
@@ -911,24 +1154,39 @@ namespace Dlv005_UI
         /// <param name="e"></param>
         private void RoutesTypeComboBox_TextChanged(object sender, EventArgs e)
         {
-            if (((ComboBox)sender).SelectedItem == null)
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+
+            string textToCheck = RoutesTypeComboBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadRoutesType)
             {
-                return;
+                EnableEditMode(true);
             }
-            if (overviewBindingSource.Position >= 0)
+            switch (textToCheck)
             {
-                Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
-                string auxStringToGetTheValue = (((ComboBox)sender).SelectedValue).ToString();
-                if (comboboxBool1 == 0)
-                {
-                    row.DL31_KOMM_STRECKENART_ID = Convert.ToDecimal(auxStringToGetTheValue.Substring(1, 1));
-                }
-                else
-                {
-                    row.DL31_KOMM_STRECKENART_ID = Convert.ToDecimal(auxStringToGetTheValue);
-                }
+                case "TEST AREA":
+                    row.DL31_KOMM_STRECKENART_ID = 1;
+                    break;
+
+                case "PUBLIC ROAD":
+                    row.DL31_KOMM_STRECKENART_ID = 2;
+                    break;
+
+                case "NÜRBURGRING":
+                    row.DL31_KOMM_STRECKENART_ID = 3;
+                    break;
+
+                case "BAD ROAD":
+                    row.DL31_KOMM_STRECKENART_ID = 4;
+                    break;
+
+                default:
+                    break;
             }
-            comboboxBool1 = 2;
+            if (!isFirstLoadRoutesType)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadRoutesType = false;
         }
 
         /// <summary>
@@ -938,24 +1196,21 @@ namespace Dlv005_UI
         /// <param name="e"></param>
         private void SortTestsComboBox_TextChanged(object sender, EventArgs e)
         {
-            if (((ComboBox)sender).SelectedItem == null)
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = SortTestsComboBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadSortTests)
             {
-                return;
+                EnableEditMode(true);
             }
-            if (overviewBindingSource.Position >= 0)
+            else if (textToCheck == "IMMENDINGEN")
             {
-                Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
-                string auxStringToGetTheValue = (((ComboBox)sender).SelectedValue).ToString();
-                if (comboboxBool2 == 0)
-                {
-                    row.DL31_KOMM_ERPROBUNGSORT_ID = Convert.ToDecimal(auxStringToGetTheValue.Substring(1, 1));
-                }
-                else
-                {
-                    row.DL31_KOMM_ERPROBUNGSORT_ID = Convert.ToDecimal(auxStringToGetTheValue);
-                }
+                row.DL31_KOMM_ERPROBUNGSORT_ID = 1;
             }
-            comboboxBool2 = 2;
+            if (!isFirstLoadSortTests)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadSortTests = false;
         }
 
         /// <summary>
@@ -965,31 +1220,42 @@ namespace Dlv005_UI
         /// <param name="e"></param>
         private void SpecialQualificationComboBox_TextChanged(object sender, EventArgs e)
         {
-            if (((ComboBox)sender).SelectedItem == null)
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = SpecialQualificationComboBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadSpecialQualification)
             {
-                return;
+                EnableEditMode(true);
             }
-            if (overviewBindingSource.Position >= 0)
+            switch (textToCheck)
             {
-                Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
-                string auxStringToGetTheValue = (((ComboBox)sender).SelectedValue).ToString();
-                if (comboboxBool3 == 0)
-                {
-                    if (auxStringToGetTheValue[2] == Convert.ToChar(","))
-                    {
-                        row.DL31_SONDERQUALIFIKATION_ID = Convert.ToDecimal(auxStringToGetTheValue.Substring(1, 1));
-                    }
-                    else
-                    {
-                        row.DL31_SONDERQUALIFIKATION_ID = Convert.ToDecimal(auxStringToGetTheValue.Substring(1, 2));
-                    }
-                }
-                else
-                {
-                    row.DL31_SONDERQUALIFIKATION_ID = Convert.ToDecimal(auxStringToGetTheValue);
-                }
+                case "OFFROAD":
+                    row.DL31_SONDERQUALIFIKATION_ID = 7;
+                    break;
+
+                case "WINTER":
+                    row.DL31_SONDERQUALIFIKATION_ID = 8;
+                    break;
+
+                case "BRENNSTOFFZELLE":
+                    row.DL31_SONDERQUALIFIKATION_ID = 9;
+                    break;
+
+                case "ELEKTROANTRIEB":
+                    row.DL31_SONDERQUALIFIKATION_ID = 10;
+                    break;
+
+                case "-":
+                    row.DL31_SONDERQUALIFIKATION_ID = 11;
+                    break;
+
+                default:
+                    break;
             }
-            comboboxBool3 = 2;
+            if (!isFirstLoadSpecialQualification)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadSpecialQualification = false;
         }
 
         /// <summary>
@@ -999,25 +1265,34 @@ namespace Dlv005_UI
         /// <param name="e"></param>
         private void HVQualificationComboBox_TextChanged(object sender, EventArgs e)
         {
-            if (((ComboBox)sender).SelectedItem == null)
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = HVQualificationComboBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadHVQualification)
             {
-                return;
+                EnableEditMode(true);
             }
+            switch (textToCheck)
+            {
+                case "HOCHVOLT 1":
+                    row.DL31_HV_QUALIFIKATION_ID = 4;
+                    break;
 
-            if (overviewBindingSource.Position >= 0)
-            {
-                Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
-                string auxStringToGetTheValue = (((ComboBox)sender).SelectedValue).ToString();
-                if (comboboxBool4 == 0)
-                {
-                    row.DL31_HV_QUALIFIKATION_ID = Convert.ToDecimal(auxStringToGetTheValue.Substring(1, 1));
-                }
-                else
-                {
-                    row.DL31_HV_QUALIFIKATION_ID = Convert.ToDecimal(auxStringToGetTheValue);
-                }
+                case "HOCHVOLT 2":
+                    row.DL31_HV_QUALIFIKATION_ID = 5;
+                    break;
+
+                case "HOCHVOLT 3":
+                    row.DL31_HV_QUALIFIKATION_ID = 6;
+                    break;
+
+                default:
+                    break;
             }
-            comboboxBool4 = 2;
+            if (!isFirstLoadHVQualification)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadHVQualification = false;
         }
 
         /// <summary>
@@ -1027,25 +1302,34 @@ namespace Dlv005_UI
         /// <param name="e"></param>
         private void DrivingAuthorizationComboBox_TextChanged(object sender, EventArgs e)
         {
-            if (((ComboBox)sender).SelectedItem == null && overviewBindingSource.Position >= 0)
+            Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
+            string textToCheck = DrivingAuthorizationComboBox.Text.ToUpper();
+            if (textToCheck == string.Empty && !isFirstLoadDrivingAuthorization)
             {
-                return;
+                EnableEditMode(true);
             }
+            switch (textToCheck)
+            {
+                case "T1":
+                    row.DL31_FAHRBERECHTIGUNG_ID = 1;
+                    break;
 
-            if (overviewBindingSource.Position >= 0)
-            {
-                Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
-                string auxStringToGetTheValue = (((ComboBox)sender).SelectedValue).ToString();
-                if (comboboxBool5 == 0)
-                {
-                    row.DL31_FAHRBERECHTIGUNG_ID = Convert.ToDecimal(auxStringToGetTheValue.Substring(1, 1));
-                }
-                else
-                {
-                    row.DL31_FAHRBERECHTIGUNG_ID = Convert.ToDecimal(auxStringToGetTheValue);
-                }
+                case "T2":
+                    row.DL31_FAHRBERECHTIGUNG_ID = 2;
+                    break;
+
+                case "T3":
+                    row.DL31_FAHRBERECHTIGUNG_ID = 3;
+                    break;
+
+                default:
+                    break;
             }
-            comboboxBool5 = 2;
+            if (!isFirstLoadDrivingAuthorization)
+            {
+                EnableEditMode(true);
+            }
+            isFirstLoadDrivingAuthorization = false;
         }
 
         /// <summary>
@@ -1053,24 +1337,6 @@ namespace Dlv005_UI
         /// </summary>
         private void InitializeValidations()
         {
-            errorsDictionary.Add("TestingContent", false);
-            errorsDictionary.Add("StartDate", false);
-            errorsDictionary.Add("EndDate", false);
-            errorsDictionary.Add("SortTests", false);
-            errorsDictionary.Add("RoutesType", false);
-            errorsDictionary.Add("TestingType", false);
-            errorsDictionary.Add("Series", false);
-            errorsDictionary.Add("CustomerOE", false);
-            errorsDictionary.Add("Customer", false);
-            errorsDictionary.Add("Chief", false);
-            errorsDictionary.Add("EngineeringAST", false);
-            errorsDictionary.Add("DrivingAuthorization", false);
-            errorsDictionary.Add("HVQualification", false);
-            errorsDictionary.Add("SpecialQualification", false);
-            errorsDictionary.Add("Allocation", false);
-
-            businessValidations = new Dlv005Validations(errorsDictionary);
-
             TestingContentTextBox.Validating += TestingContentTextBox_ValidateTestingContent;
             FromDateTimePicker.Validating += FromDateTimePicker_ValidateStartDate;
             ToDateTimePicker.Validating += ToDateTimePicker_ValidateEndDate;
@@ -1095,8 +1361,7 @@ namespace Dlv005_UI
         /// <param name="e"></param>
         private void DataGridView2_ValidateAllocationgrid(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            businessValidations.ValidateAllocationGrid(dataGridView2, AllocationErrorProvider, e);
-           
+            businessValidations.ValidateAllocationGrid(dataGridView2, AllocationErrorProvider, e, ErrorMessage.emptyMandatory, ErrorMessage.allocationProcent, ErrorMessage.incorrectFormat);
         }
 
         /// <summary>
@@ -1245,7 +1510,7 @@ namespace Dlv005_UI
         ///
         /// </summary>
         /// <returns></returns>
-        private DataRow GetTheNewCommisionRow()
+        private DataRow GetTheCorrectActiveRow()
         {
             BindingManagerBase bm = dataGridView1.BindingContext[dataGridView1.DataSource, dataGridView1.DataMember];
             DataRow row = ((DataRowView)bm.Current).Row;
@@ -1262,18 +1527,29 @@ namespace Dlv005_UI
         {
             if (ValidateChildren())
             {
+                if (this.FromDateTimePicker.Value < DateTime.Now.AddDays(7))
+                {
+                    if (!(MessageBox.Show(ErrorMessage.shortTermDate, "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes))
+                    {
+                        return;
+                    }
+                }
                 if (isInEditMode && !isNewCopy && !isNew)
                 {
                     businessOperations.UpdateCommision(DuplicateSelectedRow());
+                    foreach (decimal id in allocationDeletedRows)
+                    {
+                        businessOperations.DeleteDataDl32OnlyAllocation(id);
+                    }
+                    allocationDeletedRows.Clear();
                     DisableEditMode();
-                    isInEditMode = false;
+                    businessOperations.ReloadAllocation();
                 }
                 else
                 {
-                    businessOperations.SaveCommision(GetTheNewCommisionRow());
+                    businessOperations.SaveCommision(GetTheCorrectActiveRow());
                     businessOperations.Reload();
                     DisableEditMode();
-
                     tabControl.SelectedTab = Overview;
                     dataGridView1.CurrentCell = dataGridView1.Rows[dataGridView1.Rows.Count - 1].Cells[0];
                     tabControl.SelectedTab = BasicData;
@@ -1284,6 +1560,7 @@ namespace Dlv005_UI
                 isNew = false;
                 isNewCopy = false;
                 isInEditMode = false;
+                dataGridView2.AllowUserToAddRows = true;
                 Dlv005DataSet.MainTableRow row = DuplicateSelectedRow();
                 allocationBindingSource.Filter = String.Format(("DL32_EXT_KOMM_ANFORDERUNG_ID= {0}"), Convert.ToInt16(row.DL31_KOMM_ANFORDERUNG_ID));
             }
@@ -1312,6 +1589,8 @@ namespace Dlv005_UI
             }
             DisableButtonsWhenNoComissions();
             CheckForStatusChangeInOverview();
+            isConfirmedInBasicData = false;
+            isRequeestedInBasicData = false;
         }
 
         /// <summary>
@@ -1359,7 +1638,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Display in basic data the selection made on selection table.
         /// </summary>
         /// <param name="keyValuePairs"></param>
         public void CallBackSelectionTable(SelectionTablesUsed tablesUsed, List<KeyValuePair<decimal, string>> keyValuePairs)
@@ -1439,18 +1718,24 @@ namespace Dlv005_UI
             var updatedRow = DuplicateSelectedRow();
             if (tabControl.SelectedTab == BasicData)
             {
+                isConfirmedInBasicData = true;
                 updatedRow["DL31_KOMM__STATUS_ID"] = 3;
                 businessOperations.UpdateCommision(updatedRow);
                 businessOperations.ReloadOverview();
-                CheckForStatusChange();
+                ResetDataWhenCancelOrEnterBasicData();
             }
             else
             {
                 updatedRow["DL31_KOMM__STATUS_ID"] = 3;
                 businessOperations.UpdateCommision(updatedRow);
                 businessOperations.ReloadOverview();
-                dataGridView1.Rows[0].Selected = true;
                 CheckForStatusChange();
+                DisableButtonsWhenNoComissions();
+            }
+            if (overviewBindingSource.Position >= 0)
+            {
+                dataGridView1.Rows[0].Selected = true;
+                dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[1];
             }
         }
 
@@ -1470,15 +1755,22 @@ namespace Dlv005_UI
             updatedRow["DL31_KOMM__STATUS_ID"] = 2;
             if (tabControl.SelectedTab == BasicData)
             {
+                isRequeestedInBasicData = true;
                 businessOperations.UpdateCommision(updatedRow);
                 businessOperations.ReloadOverview();
-                CheckForStatusChange();
+                ResetDataWhenCancelOrEnterBasicData();
             }
             else
             {
                 businessOperations.UpdateCommision(updatedRow);
                 businessOperations.ReloadOverview();
                 CheckForStatusChange();
+                DisableButtonsWhenNoComissions();
+            }
+            if (overviewBindingSource.Position >= 0 && tabControl.SelectedTab == Overview)
+            {
+                dataGridView1.Rows[0].Selected = true;
+                dataGridView1.CurrentCell = dataGridView1.Rows[0].Cells[1];
             }
         }
 
@@ -1516,7 +1808,11 @@ namespace Dlv005_UI
         /// <param name="e"></param>
         private void NewCopy_Click(object sender, EventArgs e)
         {
-            ExitCancelButton.Text = "Cancel";
+            foreach (Control c in BasicData.Controls)
+            {
+                c.Enabled = true;
+            }
+
             isNewCopy = true;
             tabControl.SelectTab(BasicData);
             businessOperations.CreateNewCopy(DuplicateSelectedRow(), isNewCopy);
@@ -1538,6 +1834,11 @@ namespace Dlv005_UI
             {
                 return null;
             }
+            else if (isRequeestedInBasicData)
+            {
+                var row = businessOperations.Dlv005DataSet.MainTable.Where(r => r.DL31_KOMM_ANFORDERUNG_NR == testingNumber).First();
+                return row as Dlv005DataSet.MainTableRow;
+            }
             else
             {
                 return (dataGridView1.Rows[overviewBindingSource.Position].DataBoundItem as DataRowView).Row as Dlv005DataSet.MainTableRow;
@@ -1545,7 +1846,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        ///Change date time picker format.
         /// </summary>
         /// <param name="format"></param>
         private void SetEmptyFromDateTimePicker(string format)
@@ -1555,7 +1856,7 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Change date time picker format.
         /// </summary>
         /// <param name="format"></param>
         private void SetEmptyToDateTimePicker(string format)
@@ -1565,12 +1866,17 @@ namespace Dlv005_UI
         }
 
         /// <summary>
-        ///
+        /// Prepare the function for a new commision.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void New_Click(object sender, EventArgs e)
         {
+            foreach (Control c in BasicData.Controls)
+            {
+                c.Enabled = true;
+            }
+
             CheckForFirstCommision();
             isNew = true;
             includeSaturdayworkCheckBox.Checked = false;
@@ -1609,6 +1915,7 @@ namespace Dlv005_UI
             {
                 Close();
             }
+            AllocationErrorProvider.Clear();
             if (firstCommision)
             {
                 isNew = false;
@@ -1616,11 +1923,7 @@ namespace Dlv005_UI
                 businessOperations.CancelSave();
                 tabControl.SelectedTab = Overview;
             }
-            if (overviewBindingSource.Position <= 0)
-            {
-                businessOperations.CancelSave();
-                CheckForExistingRows();
-            }
+
             if (isNew || isNewCopy)
             {
                 isNew = false;
@@ -1631,6 +1934,11 @@ namespace Dlv005_UI
                 SetEmptyFromDateTimePicker("dd/MM/yyyy");
                 SetEmptyToDateTimePicker("dd/MM/yyyy");
                 isInEditMode = false;
+            }
+            if (overviewBindingSource.Position <= 0)
+            {
+                businessOperations.CancelSave();
+                CheckForExistingRows();
             }
             if (tabControl.SelectedIndex == 1 && isInEditMode)
             {
@@ -1646,6 +1954,7 @@ namespace Dlv005_UI
                 businessOperations.CancelSave();
                 ResetDataWhenCancelOrEnterBasicData();
             }
+            dataGridView2.AllowUserToAddRows = true;
         }
 
         /// <summary>
@@ -1705,12 +2014,9 @@ namespace Dlv005_UI
         private void BindData()
         {
             businessOperations = new Dlv005BusinessOperations();
-
-            var dataSource = businessOperations.GetData();
-
+            Dlv005DataSet dataSource = businessOperations.GetData();
             overviewBindingSource.DataSource = dataSource;
             dataGridView1.DataSource = overviewBindingSource;
-
             allocationBindingSource.DataSource = dataSource;
             dataGridView2.DataSource = allocationBindingSource;
             numberOfCommisionsDisplayOnOverview = dataGridView1.RowCount;
@@ -1719,6 +2025,9 @@ namespace Dlv005_UI
             BindComboBoxes();
         }
 
+        /// <summary>
+        /// Return true case is first commision.
+        /// </summary>
         private void CheckForFirstCommision()
         {
             if ((businessOperations.Dlv005DataSet.MainTable?.Rows?.Count ?? 0) == 0)

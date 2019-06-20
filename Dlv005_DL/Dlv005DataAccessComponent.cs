@@ -10,13 +10,7 @@ namespace Dlv005_DL
     /// </summary>
     public class Dlv005DataAccessComponent
     {
-        
-
-                protected const string ConnectionString = "server=localhost;uid=root;" +
-                "pwd=nzec3ecz;database=dlv_005;";
-
-
-       // protected const string ConnectionString = "Server=localhost;Port=3306;Database=dlv_005db;Uid=root;password=root123";
+        protected const string ConnectionString = "Server=localhost;Port=3306;Database=dlv_005db;Uid=root;password=root123";
 
         /// <summary>
         /// Fills the data table.
@@ -102,6 +96,35 @@ namespace Dlv005_DL
                 }
             }
         }
+
+        /// <summary>
+        /// Deletes the only allocation.
+        /// </summary>
+        /// <param name="deleteID">The delete identifier.</param>
+        public void DeleteOnlyAllocation(decimal deleteID)
+        {
+            using (MySqlConnection conn = new MySqlConnection(ConnectionString))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(DeleteStatementOnlyAllocation(deleteID), conn))
+                {
+                    conn.Open();
+
+                    try
+                    {
+                        cmd.ExecuteNonQuery();
+                        cmd.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex);
+                    }
+
+                    conn.Close();
+                }
+            }
+        }
+
+     
 
         /// <summary>
         /// Deletes the allocation data.
@@ -584,6 +607,24 @@ namespace Dlv005_DL
             return String.Format(sb.ToString(), deleteID);
         }
 
+        /// <summary>Deletes the statement only allocation.</summary>
+        /// <param name="deleteID">The delete identifier.</param>
+        /// <returns></returns>
+        private string DeleteStatementOnlyAllocation(decimal deleteID)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(" DELETE FROM dl32_ext_komm_konto ");
+            sb.Append(" WHERE DL32_KOMM_ANFORDERUNG_KONTO_ID = {0} ");
+
+            return String.Format(sb.ToString(), deleteID);
+
+        }
+
+        /// <summary>
+        /// Updates the DL32 statement.
+        /// </summary>
+        /// <returns></returns>
         private string UpdateDl32Statement()
         {
             StringBuilder sb = new StringBuilder();

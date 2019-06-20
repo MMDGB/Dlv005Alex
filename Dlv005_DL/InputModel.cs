@@ -37,7 +37,7 @@ namespace Dlv005_DL
     public class AllocationInputModel
     {
         public string DL32_KONTIERUNG { get; set; }
-        public decimal? DL32_ANTEIL_PROZENT { get; set; }
+        public string DL32_ANTEIL_PROZENT { get; set; }
         public decimal? DL32_EXT_KOMM_ANFORDERUNG_ID { get; set; }
         public decimal? DL32_KOMM_ANFORDERUNG_KONTO_ID { get; set; }
     }
